@@ -1,295 +1,2074 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>נתונים</title>
+<title>Tech Budget 2027 — Leadership Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Narrow:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  body{font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#F4F5F2;
-       color:#1A2430;margin:0;padding:30px 20px}
-  .box{max-width:680px;margin:0 auto;background:#fff;border:1px solid #DCDFD9;border-radius:4px}
-  h1{margin:0;padding:15px 20px;font-size:18px;border-bottom:1px solid #DCDFD9;
-     display:flex;align-items:baseline;gap:10px}
-  h1 .repo{margin-inline-start:auto;font-size:12.5px;color:#96A1AE;font-weight:400;direction:ltr}
-  table{border-collapse:collapse;width:100%;font-size:15px}
-  th{background:#FAFAF7;text-align:right;font-size:13px;color:#6B7787;padding:9px 14px;
-     border-bottom:1px solid #DCDFD9}
-  th.i{width:32px}
-  td{padding:4px 8px;border-bottom:1px solid #EDEFE9}
-  td.i{color:#96A1AE;font-size:12.5px;text-align:center;padding:4px}
-  tr:last-child td{border-bottom:none}
-  td input{width:100%;border:1px solid transparent;border-radius:3px;padding:7px 8px;
-           font:inherit;color:inherit;background:transparent}
-  td input:hover{border-color:#DCDFD9}
-  td input:focus{outline:none;border-color:#C08A2E;background:#FFFCF5}
-  td input.dirty{background:#FFF8EA;border-color:#E8D2A2}
+:root{
+  --ink:#2E3D4D; --paper:#F6F8FA; --surface:#FFFFFF; --rule:#E1E7ED; --rule2:#EEF2F6;
+  --accent:#4A76A3; --accent-mid:#8FB4D6; --accent-soft:#EDF3F9; --accent-pale:#CFD8E0;
+  --fill-blue:#8FB4D6; --fill-blue2:#A6C4DF; --fill-blue3:#C9DCEC;
+  --fill-rose:#E8AC97; --fill-sage:#9CCBB0; --fill-amber:#EBCB8B;
+  --up:#B05744; --down:#34815C; --warn:#9A7619;
+  --muted:#66798A; --muted2:#94A5B3;
+  --fig:"Archivo Narrow","Archivo Narrow Fallback",-apple-system,Segoe UI,sans-serif;
+  --ui:"Archivo","Archivo Fallback",-apple-system,Segoe UI,Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ui);font-size:14px;line-height:1.5}
+.num{font-family:var(--fig);font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.01em}
+a{color:var(--accent)}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-       padding:14px 20px;border-top:1px solid #DCDFD9;background:#FAFAF7}
-  button{font:inherit;cursor:pointer;border-radius:3px;padding:9px 18px}
-  .save{background:#C08A2E;color:#22190A;border:none;font-weight:700}
-  .save:hover{background:#D29B3C}
-  .save:disabled{background:#DDE0D9;color:#96A1AE;cursor:not-allowed}
-  .ghost{background:#fff;border:1px solid #DCDFD9;font-weight:600}
-  .ghost:hover{border-color:#32465F}
-  .msg{margin-inline-start:auto;font-size:13.5px;color:#6B7787}
-  .msg.ok{color:#3E7A6E;font-weight:600}
-  .msg.err{color:#A34832;font-weight:600}
-  .pad{padding:22px 20px;color:#6B7787;font-size:14.5px}
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:60;background:var(--surface);color:var(--ink);border-bottom:1px solid var(--rule)}
+.top-in{max-width:1560px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;gap:1px;margin-right:auto}
+.brand b{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.brand span{font-size:11.5px;color:var(--muted2)}
+.live{display:flex;align-items:baseline;gap:9px}
+.live .v{font-family:var(--fig);font-size:29px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--ink)}
+.live .u{font-size:11.5px;color:var(--muted)}
+.pill{font-family:var(--fig);font-size:12.5px;font-weight:600;padding:3.5px 9px;border-radius:2px;white-space:nowrap}
+.pill.up{background:#FBEEE9;color:var(--up)}
+.pill.dn{background:#E8F3EC;color:var(--down)}
+.pill.flat{background:var(--paper);color:var(--muted)}
+.tbtn{background:var(--surface);border:1px solid var(--rule);color:var(--ink);padding:6px 12px;border-radius:2px;font-size:12.5px;font-weight:500}
+.tbtn:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 
-  dialog{border:none;border-radius:5px;padding:24px;max-width:440px;width:calc(100% - 40px);
-         box-shadow:0 16px 44px rgba(20,30,45,.26)}
-  dialog::backdrop{background:rgba(20,30,45,.45)}
-  dialog h3{margin:0 0 10px;font-size:18px}
-  dialog p{margin:0 0 14px;color:#6B7787;font-size:14px}
-  dialog input{width:100%;padding:10px 12px;border:1px solid #DCDFD9;border-radius:3px;
-               direction:ltr;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
-  dialog .btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+/* ---------- tabs ---------- */
+.tabs{position:sticky;top:52px;z-index:55;background:var(--paper);border-bottom:1px solid var(--rule);padding:0 22px;display:flex;gap:2px;overflow-x:auto}
+.tabs button{background:none;border:none;border-bottom:2px solid transparent;padding:11px 15px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected=true]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tabs button .cnt{font-family:var(--fig);font-size:11px;color:var(--muted2);margin-left:6px}
+.pane{display:flex;flex-direction:column;gap:22px}
+.pane[hidden]{display:none}
+
+/* ---------- pivot ---------- */
+.pl{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+.pivrow{display:grid;grid-template-columns:minmax(150px,1.5fr) minmax(0,4fr) 96px 96px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule2);cursor:pointer;background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left}
+.pivrow:last-child{border-bottom:none}
+.pivrow:hover{background:#F8FAFC}
+.pivrow.on{background:var(--accent-soft)}
+.pivrow .pn{font-size:12.5px;font-weight:500;line-height:1.25}
+.pivrow .pn small{display:block;color:var(--muted2);font-size:10.5px;font-weight:400}
+.bars2{display:flex;flex-direction:column;gap:3px}
+.b26{height:9px;border-radius:1px;background:var(--accent-pale)}
+.stack{display:flex;height:15px;border-radius:1px;overflow:hidden;background:var(--rule2)}
+.stack i{height:15px;position:relative}
+.stack i:hover{filter:brightness(1.14)}
+.pivrow .pv{font-family:var(--fig);font-size:13.5px;font-weight:700;text-align:right}
+.pivrow .pg{font-family:var(--fig);font-size:12.5px;font-weight:700;text-align:right;line-height:1.2}
+.pivrow .pg small{display:block;font-family:var(--fig);font-size:11px;font-weight:600;opacity:.8}
+.legend{display:flex;gap:7px 15px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-bottom:13px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.mat table{min-width:560px;font-size:12px}
+.mat td{padding:7px 9px}
+.mat thead th{padding:8px 9px;font-size:10.5px}
+.mat td:first-child{min-width:132px}
+.mat td.d{font-family:var(--fig);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.mat td.z{color:var(--muted2)}
+.mat .brk{border-left:1px solid var(--rule)}
+.mat th.brk{border-left:1px solid var(--rule)}
+.mat tr.tot td{border-top:1.5px solid var(--accent-mid);font-weight:700;background:var(--accent-soft)}
+.mat tbody tr.pick{cursor:pointer}
+.mat tbody tr.pick.on{background:var(--accent-soft)}
+.mat th.rot{text-align:right}
+.heat{position:relative}
+.bandrow{display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,3fr) 84px 64px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule2);font-size:12px}
+.bandrow:last-child{border-bottom:none}
+.bandrow .bb{height:14px;background:var(--rule2);border-radius:1px;position:relative}
+.bandrow .bb i{position:absolute;left:0;top:0;height:14px;border-radius:1px}
+.bandrow .bv{font-family:var(--fig);font-size:12.5px;font-weight:700;text-align:right}
+.bandrow .bc{font-family:var(--fig);font-size:11.5px;color:var(--muted);text-align:right}
+
+/* ---------- top vendors ---------- */
+.tvrow{display:grid;grid-template-columns:26px minmax(130px,1.4fr) minmax(0,3fr) 88px 92px 62px;gap:11px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule2);width:100%;text-align:left;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer}
+.tvrow:last-of-type{border-bottom:none}
+.tvrow:hover{background:#F8FAFC}
+.tvrow .tvr{font-family:var(--fig);font-size:12px;font-weight:700;color:var(--muted2)}
+.tvrow .tvn{font-size:12.5px;font-weight:500;line-height:1.25}
+.tvrow .tvn small{display:block;color:var(--muted2);font-size:10.5px;font-weight:400}
+.tvrow .tvv{font-family:var(--fig);font-size:13.5px;font-weight:700;text-align:right}
+.tvrow .tvg{font-family:var(--fig);font-size:12.5px;font-weight:700;text-align:right;line-height:1.2}
+.tvrow .tvg small{display:block;font-family:var(--fig);font-size:11px;font-weight:600;opacity:.8}
+.tvrow .tvc{font-family:var(--fig);font-size:11.5px;font-weight:600;color:var(--muted);text-align:right}
+.concfoot{margin-top:14px;padding:12px 14px;background:var(--accent-soft);border:1px solid var(--rule);border-radius:2px;font-size:12.5px;line-height:1.55}
+.concfoot b{font-family:var(--fig);font-variant-numeric:tabular-nums}
+
+/* ---------- termination check ---------- */
+.tc{display:grid;grid-template-columns:minmax(180px,1.6fr) minmax(0,3fr) 100px;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid var(--rule2)}
+.tc:last-of-type{border-bottom:none}
+.tc .tcn{font-size:12.5px;font-weight:500}
+.tc .tcn small{display:block;color:var(--muted2);font-size:10.5px;font-weight:400;line-height:1.4}
+.tc .tcb{height:15px;background:var(--rule2);border-radius:1px;position:relative}
+.tc .tcb i{position:absolute;left:0;top:0;height:15px;border-radius:1px}
+.tc .tcv{font-family:var(--fig);font-size:13.5px;font-weight:700;text-align:right}
+.tcnet{margin-top:14px;padding:12px 14px;background:var(--accent-soft);border:1px solid var(--rule);border-radius:2px;font-size:12.5px;line-height:1.55}
+.tcnet b{font-family:var(--fig);font-variant-numeric:tabular-nums}
+
+/* ---------- shell ---------- */
+.shell{max-width:1560px;margin:0 auto;padding:22px;display:grid;grid-template-columns:314px minmax(0,1fr);gap:22px;align-items:start}
+.rail{position:sticky;top:112px;max-height:calc(100vh - 92px);overflow-y:auto;background:var(--surface);border:1px solid var(--rule);border-radius:3px}
+.rail::-webkit-scrollbar{width:9px}.rail::-webkit-scrollbar-thumb{background:#C6D0CE;border-radius:9px}
+.main{display:flex;flex-direction:column;gap:22px;min-width:0}
+
+/* ---------- rail ---------- */
+.rail-h{padding:13px 16px 12px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rail-h h2{font-size:12.5px;font-weight:600}
+.rail-h button{background:none;border:none;color:var(--accent);font-size:11.5px;font-weight:600;padding:0}
+.grp{padding:14px 16px;border-bottom:1px solid var(--rule2)}
+.grp:last-child{border-bottom:none}
+.grp>h3{font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:11px}
+.presets{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.presets button{background:var(--paper);border:1px solid var(--rule);border-radius:2px;padding:7px 5px;font-size:11.5px;font-weight:500;line-height:1.25;text-align:center}
+.presets button:hover{border-color:var(--accent);color:var(--accent)}
+.presets button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.seg{display:flex;border:1px solid var(--rule);border-radius:2px;overflow:hidden}
+.seg button{flex:1;background:var(--surface);border:none;padding:7px 4px;font-size:11.5px;font-weight:500;border-right:1px solid var(--rule)}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff}
+.sl{margin-bottom:13px}
+.sl:last-child{margin-bottom:0}
+.sl-t{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+.sl-t label{font-size:12px;line-height:1.25}
+.sl-t .val{font-family:var(--fig);font-size:13px;font-weight:700;color:var(--accent);white-space:nowrap}
+.sl-t .val.edited{color:var(--up)}
+.sl-sub{font-size:10.5px;color:var(--muted2);margin-top:5px}
+.spin{display:inline-flex;align-items:stretch;border:1px solid var(--rule);border-radius:3px;overflow:hidden;background:var(--surface)}
+.spin button{width:20px;border:none;background:var(--paper);color:var(--muted);font-size:13px;font-weight:600;line-height:1;padding:0}
+.spin button:hover{background:var(--accent-soft);color:var(--accent)}
+.spin input{width:46px;border:none;padding:3px 2px;text-align:right;font-family:var(--fig);font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:700;color:var(--accent);background:transparent;-moz-appearance:textfield}
+.spin input::-webkit-outer-spin-button,.spin input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.spin input:focus{outline:none;background:var(--accent-soft)}
+.spin input.edited{color:var(--up)}
+.spin .pct{font-size:10.5px;color:var(--muted2);align-self:center;padding-right:4px}
+.sl-scale{display:flex;justify-content:space-between;font-family:var(--fig);font-size:9.5px;color:var(--muted2);margin-top:1px}
+.sl-scale .filed{color:var(--muted2);opacity:.85}
+input[type=range]{width:100%;height:16px;-webkit-appearance:none;appearance:none;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--rule);border-radius:3px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5.5px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 1.5px var(--accent)}
+input[type=range]::-moz-range-track{height:3px;background:var(--rule);border-radius:3px}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid #fff}
+.chk{display:flex;gap:9px;align-items:flex-start;margin-bottom:10px;cursor:pointer}
+.chk:last-child{margin-bottom:0}
+.chk input{margin:2px 0 0;accent-color:var(--accent);width:14px;height:14px}
+.chk span{font-size:12px;line-height:1.35}
+.chk small{display:block;color:var(--muted2);font-size:10.5px;line-height:1.35}
+.fld{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fld:last-child{margin-bottom:0}
+.fld label{font-size:11.5px;color:var(--muted)}
+.fld input{border:1px solid var(--rule);border-radius:2px;padding:6px 8px;font-family:var(--fig);font-variant-numeric:tabular-nums;background:var(--surface);width:100%}
+.fld input:focus{border-color:var(--accent);outline:none}
+
+/* ---------- cards ---------- */
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:3px}
+.card-h{padding:14px 18px;border-bottom:1px solid var(--rule2);display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+.card-h h2{font-size:15px}
+.card-h p{margin:3px 0 0;font-size:12px;color:var(--muted);max-width:66ch}
+.card-b{padding:18px}
+
+/* ---------- headline figures ---------- */
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(172px,1fr));gap:1px;background:var(--rule2);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.fig{background:var(--surface);padding:15px 17px}
+.fig .k{font-size:11.5px;color:var(--muted);margin-bottom:7px;line-height:1.3}
+.fig .n{font-family:var(--fig);font-size:27px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.fig .s{font-size:11.5px;color:var(--muted2);margin-top:6px;line-height:1.35}
+.fig .n.up{color:var(--up)}.fig .n.dn{color:var(--down)}
+
+/* ---------- svg ---------- */
+.svgwrap{width:100%;overflow-x:auto}
+svg{display:block;max-width:100%;height:auto}
+.ax{stroke:var(--rule);stroke-width:1}
+.gl{stroke:var(--rule2);stroke-width:1}
+.lab{font-family:var(--ui);font-size:11px;fill:var(--muted)}
+.valx{font-family:var(--fig);font-size:12px;font-weight:700;fill:var(--ink)}
+.pctx{font-family:var(--fig);font-size:10.5px;font-weight:600;opacity:.9}
+.conn{stroke:var(--muted2);stroke-width:1;stroke-dasharray:2 2.5}
+
+/* ---------- category rows ---------- */
+.catrow{display:grid;grid-template-columns:minmax(140px,1.35fr) minmax(0,3fr) 88px 74px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule2);cursor:pointer;text-align:left;background:none;border-left:none;border-right:none;border-top:none;width:100%}
+.catrow:last-child{border-bottom:none}
+.catrow:hover{background:#F8FAFC}
+.catrow.on{background:var(--accent-soft)}
+.catrow .cn{font-size:12.5px;font-weight:500;line-height:1.25}
+.catrow .cn small{display:block;color:var(--muted2);font-size:10.5px;font-weight:400}
+.bars{position:relative;height:20px}
+.bar{position:absolute;height:8px;border-radius:1px}
+.bar.b0{top:0;background:var(--accent-pale)}
+.bar.b1{top:11px;background:var(--accent)}
+.catrow .cv{font-family:var(--fig);font-size:13px;font-weight:700;text-align:right}
+.catrow .cd{font-family:var(--fig);font-size:12px;font-weight:600;text-align:right}
+.legend{display:flex;gap:16px;font-size:11.5px;color:var(--muted);margin-bottom:12px}
+.legend i{display:inline-block;width:16px;height:8px;border-radius:1px;margin-right:6px;vertical-align:middle}
+
+/* ---------- tornado ---------- */
+.torn{display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,2.6fr) 92px;gap:12px;align-items:center;padding:7px 0;border-bottom:1px solid var(--rule2);font-size:12px}
+.torn:last-child{border-bottom:none}
+.tbar{position:relative;height:14px;background:var(--rule2);border-radius:1px}
+.tbar i{position:absolute;left:0;top:0;height:14px;background:var(--fill-blue);border-radius:1px}
+.torn .tv{font-family:var(--fig);font-size:12.5px;font-weight:700;text-align:right}
+
+/* ---------- risk ---------- */
+.risks{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:1px;background:var(--rule2)}
+.risk{background:var(--surface);padding:14px 16px}
+.risk .rn{font-family:var(--fig);font-size:23px;font-weight:700;line-height:1}
+.risk .rt{font-size:12px;font-weight:500;margin:6px 0 4px}
+.risk .rd{font-size:11px;color:var(--muted);line-height:1.4}
+.risk.w .rn{color:var(--warn)}.risk.d .rn{color:var(--up)}
+.issues{border-top:1px solid var(--rule2)}
+.iss{display:grid;grid-template-columns:26px minmax(0,1fr) 96px;gap:12px;padding:11px 18px;border-bottom:1px solid var(--rule2);align-items:start}
+.iss:last-child{border-bottom:none}
+.iss .in{font-family:var(--fig);font-size:12px;font-weight:700;color:var(--muted2);padding-top:1px}
+.iss b{font-size:12.5px;font-weight:600;display:block;margin-bottom:2px}
+.iss p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.45}
+.iss .im{font-family:var(--fig);font-size:12.5px;font-weight:700;text-align:right}
+.iss .im small{display:block;font-family:var(--ui);font-size:10px;font-weight:500;color:var(--muted2)}
+.grpline{padding:9px 18px;background:var(--accent-soft);font-size:11.5px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--rule2)}
+
+/* ---------- table ---------- */
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:13px 18px;border-bottom:1px solid var(--rule2)}
+.tools input[type=search],.tools select{border:1px solid var(--rule);border-radius:2px;padding:6px 9px;background:var(--surface);font-size:12.5px}
+.tools input[type=search]{min-width:186px;flex:1}
+.tools input:focus,.tools select:focus{border-color:var(--accent);outline:none}
+.tag{background:var(--paper);border:1px solid var(--rule);border-radius:2px;padding:6px 10px;font-size:11.5px;font-weight:500}
+.tag[aria-pressed=true]{background:var(--warn);border-color:var(--warn);color:#fff}
+.tag.g[aria-pressed=true]{background:var(--accent);border-color:var(--accent)}
+.pickbar{display:none;align-items:center;gap:10px;padding:10px 18px;background:var(--accent-soft);border-bottom:1px solid var(--rule2);font-size:12px}
+.pickbar.on{display:flex}
+.pickbar b{font-weight:600}
+.pickbar button{background:var(--surface);border:1px solid var(--accent);color:var(--accent);border-radius:2px;padding:4px 9px;font-size:11.5px;font-weight:600;margin-left:auto}
+.tcount{margin-left:auto;font-size:11.5px;color:var(--muted);font-family:var(--fig);font-variant-numeric:tabular-nums}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:900px}
+thead th{position:sticky;top:0;background:var(--accent-soft);text-align:left;font-size:11px;font-weight:600;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--rule);white-space:nowrap;cursor:pointer;z-index:2}
+thead th:hover{color:var(--accent)}
+thead th.r{text-align:right}
+thead th .ar{color:var(--accent)}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--rule2);vertical-align:top}
+tbody td.r{text-align:right;font-family:var(--fig);font-variant-numeric:tabular-nums;white-space:nowrap}
+tbody tr:hover{background:#F8FAFC}
+tbody tr.cut{opacity:.5}
+tbody tr.cut .vn{text-decoration:line-through}
+.vn{font-weight:500}
+.vs{display:block;font-size:10.5px;color:var(--muted2);margin-top:1px}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:1.5px 5px;border-radius:2px;margin-right:4px;white-space:nowrap}
+.b-term{background:#FBEEE9;color:var(--up)}
+.b-plan{background:var(--accent-soft);color:var(--accent)}
+.b-flag{background:#FBF3E1;color:var(--warn)}
+.b-mkt{background:#E8F3EC;color:var(--down)}
+.b-ovr{background:#F1EDF8;color:#6A5895}
+.b-bad{background:#FBEEE9;color:var(--up)}
+.b-rsn{background:#F0F4F7;color:var(--muted)}
+.gi{width:60px;border:1px solid var(--rule);border-radius:2px;padding:3px 5px;text-align:right;font-family:var(--fig);font-variant-numeric:tabular-nums;font-size:12px;background:var(--surface)}
+.gi.on{border-color:var(--up);color:var(--up);font-weight:700}
+.exp{background:none;border:1px solid var(--rule);border-radius:2px;width:20px;height:20px;line-height:1;padding:0;color:var(--muted);font-size:12px}
+.exp:hover{border-color:var(--accent);color:var(--accent)}
+.det td{background:#F8FAFC;padding:0 10px 14px}
+.detgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:12px 22px;padding-top:12px}
+.detgrid div{font-size:11.5px;line-height:1.45}
+.detgrid b{display:block;font-size:10.5px;color:var(--muted);font-weight:600;margin-bottom:2px}
+.math{margin-top:12px;padding:9px 11px;background:var(--surface);border:1px solid var(--rule);border-radius:2px;font-family:var(--fig);font-variant-numeric:tabular-nums;font-size:12px}
+.cutbox{accent-color:var(--up);width:14px;height:14px;margin:2px 0 0}
+
+/* ---------- tray ---------- */
+.tray{position:fixed;bottom:0;left:0;right:0;z-index:70;background:var(--surface);color:var(--ink);border-top:1px solid var(--rule);padding:11px 22px;display:none;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:0 -3px 14px rgba(34,49,63,.10)}
+.tray.on{display:flex}
+.tray .tn{font-family:var(--fig);font-size:19px;font-weight:700;color:var(--down)}
+.tray .tl{font-size:12px;color:var(--muted);flex:1;min-width:180px;line-height:1.4}
+.foot{max-width:1560px;margin:0 auto;padding:4px 22px 46px;font-size:11.5px;color:var(--muted2);line-height:1.6}
+.foot b{color:var(--muted);font-weight:600}
+.railtoggle{display:none}
+
+@media (max-width:1080px){
+  .tabs{top:auto;padding:0 8px}
+  .tabs button{padding:10px 11px;font-size:12.5px}
+  .shell{grid-template-columns:1fr;padding:14px}
+  .rail{position:static;max-height:none;order:-1}
+  .railtoggle{display:block;width:100%;background:var(--surface);border:none;border-bottom:1px solid var(--rule);padding:13px 16px;text-align:left;font-size:12.5px;font-weight:600}
+  .railbody{display:none}.railbody.on{display:block}
+  .rail-h{display:none}
+  .live .v{font-size:23px}
+  .top-in{padding:10px 14px;gap:14px}
+  .foot{padding:4px 14px 46px}
+}
+@media (max-width:760px){
+  .svgwrap svg{min-width:660px;max-width:none}
+  .catrow{grid-template-columns:minmax(104px,1.3fr) minmax(0,1.6fr) 74px 60px;gap:8px}
+  .torn{grid-template-columns:minmax(96px,1fr) minmax(0,1.4fr) 78px;gap:8px}
+  .iss{grid-template-columns:22px minmax(0,1fr) 80px;gap:8px;padding:11px 14px}
+  .pivrow{grid-template-columns:minmax(96px,1.1fr) minmax(0,1.5fr) 76px 62px;gap:8px}
+  .tc{grid-template-columns:minmax(120px,1.4fr) minmax(0,1.4fr) 82px;gap:9px}
+  .tvrow{grid-template-columns:20px minmax(86px,1.2fr) minmax(0,1.2fr) 74px 76px;gap:7px}
+  .tvrow .tvc{display:none}
+  .bandrow{grid-template-columns:minmax(84px,1fr) minmax(0,1.5fr) 72px 52px;gap:8px}
+  .card-b,.tools{padding:14px}
+  .card-h{padding:13px 14px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .bar,.tbar i{transition:width .22s ease, left .22s ease}
+}
+
+/* ---------- raw CSV view ---------- */
+.rawhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rawhead .tag[disabled]{opacity:.5;cursor:default}
+.rawflag{background:#FBEEE9;color:var(--up);border:1px solid #F0D3C8;border-radius:2px;
+  padding:5px 9px;font-size:11.5px;font-weight:600}
+.rawscroll{max-height:640px;overflow:auto}
+#rawTbl{font-size:12px;table-layout:fixed;min-width:100%}
+#rawTbl thead th{position:sticky;top:0;z-index:3;background:var(--paper);
+  border-bottom:1px solid var(--rule);font-size:11px;line-height:1.3;
+  font-weight:600;color:var(--muted);padding:8px 9px;text-align:left;
+  overflow-wrap:break-word}
+#rawTbl thead th.r{text-align:right}
+#rawTbl td{border-bottom:1px solid var(--rule2);padding:5px 9px;vertical-align:top;
+  white-space:pre-wrap;overflow-wrap:break-word;hyphens:none}
+#rawTbl td.r{text-align:right;font-family:var(--fig);font-variant-numeric:tabular-nums}
+#rawTbl tr:hover td{background:#FBFCFD}
+.rawcell:focus{outline:2px solid var(--accent);outline-offset:-2px;background:var(--accent-soft)}
+td.rowno,th.rowno{position:sticky;left:0;z-index:2;background:var(--surface);
+  color:var(--muted2);font-family:var(--fig);text-align:center;width:52px;min-width:52px}
+#rawTbl thead th.rowno{z-index:4;background:var(--paper)}
+.rawdel{background:none;border:none;color:var(--muted2);font-size:15px;line-height:1;padding:0 4px}
+.rawdel:hover{color:var(--up)}
+.filebtn{position:relative;overflow:hidden;display:inline-block}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.ghstatus{margin:0;padding:11px 18px;font-size:12.5px;border-bottom:1px solid var(--rule2)}
+.ghstatus.wait{background:var(--paper);color:var(--muted)}
+.ghstatus.ok{background:#E8F3EC;color:var(--down)}
+.ghstatus.bad{background:#FBEEE9;color:var(--up)}
+
+/* ---------- credentials dialog ---------- */
+.modal{position:fixed;inset:0;z-index:200;background:rgba(46,61,77,.34);
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.modal[hidden]{display:none}
+.sheet{background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+  width:min(520px,100%);max-height:90vh;overflow:auto}
+.sheet h2{font-size:15px;padding:16px 20px 0}
+.sheet .lede{margin:5px 20px 0;font-size:12px;color:var(--muted);max-width:60ch}
+.sheet .body{padding:16px 20px}
+.sheet .fld{margin-bottom:11px}
+.sheet label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.sheet input{width:100%;border:1px solid var(--rule);border-radius:2px;padding:7px 9px;
+  font-size:12.5px;background:var(--surface)}
+.sheet input:focus{border-color:var(--accent);outline:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.hint{font-size:11px;color:var(--muted2);margin:4px 0 0}
+.held{font-size:11.5px;color:var(--down);background:#E8F3EC;padding:6px 9px;border-radius:2px;margin-bottom:11px}
+.err{color:var(--up);font-size:12px;min-height:16px;margin:2px 0 8px}
+.sheet .acts{display:flex;gap:8px;justify-content:flex-end;padding:0 20px 18px;flex-wrap:wrap}
+.sheet .acts .grow{margin-right:auto}
+@media(max-width:640px){ .row2{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
 
-<div class="box">
-  <h1>נתונים <span class="repo" id="repo"></span></h1>
-  <div id="out" class="pad">טוען…</div>
-  <div class="bar">
-    <button class="save" id="btnSave" disabled>שמור</button>
-    <button class="ghost" id="btnReload">טען מחדש</button>
-    <button class="ghost" id="btnTok">החלף טוקן</button>
-    <span class="msg" id="msg"></span>
+<div class="top">
+  <div class="top-in">
+    <div class="brand">
+      <b>Tech Budget 2027 — Leadership Review</b>
+      <span>105 vendors · all figures $000 · model rebuilds from the CSV</span>
+    </div>
+    <div class="live">
+      <span class="v num" id="hTot">—</span>
+      <span class="u">2027 plan<br>$000</span>
+    </div>
+    <span class="pill flat num" id="hVsFiled">—</span>
+    <button class="tbtn" id="btnReset">Reset to plan as filed</button>
   </div>
 </div>
 
-<dialog id="dlg">
-  <h3>טוקן לכתיבה</h3>
-  <p>השמירה מבצעת קומיט לריפו דרך GitHub API, ולכן דרוש טוקן עם הרשאת
-     Contents ← Read and write על הריפו הזה. הטוקן נשמר רק בזיכרון הטאב, לא בקוד ולא בריפו.</p>
-  <input id="tok" type="password" placeholder="github_pat_… או ghp_…" autocomplete="off">
-  <div class="btns">
-    <button class="ghost" id="dlgNo">ביטול</button>
-    <button class="save" id="dlgYes">אישור</button>
+<nav class="tabs" id="tabs"></nav>
+
+<div class="shell">
+
+  <aside class="rail">
+    <button class="railtoggle" id="railToggle" aria-expanded="false">Open the assumptions panel &nbsp;▾</button>
+    <div class="railbody" id="railBody">
+    <div class="rail-h">
+      <h2>Assumptions you can move</h2>
+      <button id="btnReset2">Reset</button>
+    </div>
+
+    <div class="grp">
+      <h3>Start from a scenario</h3>
+      <div class="presets" id="presets"></div>
+    </div>
+
+    <div class="grp">
+      <h3>What is 2027 built on?</h3>
+      <div class="seg" id="segBase">
+        <button data-b="fc" aria-pressed="true">2026 forecast</button>
+        <button data-b="bud" aria-pressed="false">2026 budget</button>
+      </div>
+      <div class="sl-sub" id="baseNote"></div>
+    </div>
+
+    <div class="grp">
+      <h3>Growth rate by cost driver</h3>
+      <div id="drvSliders"></div>
+    </div>
+
+    <div class="grp">
+      <h3>The AWS cluster</h3>
+      <div id="awsSliders"></div>
+    </div>
+
+    <div class="grp">
+      <h3>Decisions</h3>
+      <div id="decisions"></div>
+    </div>
+
+    <div class="grp">
+      <h3>Benchmarks — enter to unlock</h3>
+      <div class="fld"><label for="inHead">Employees at end of 2027</label><input id="inHead" type="number" min="0" step="10" placeholder="e.g. 650"></div>
+      <div class="fld"><label for="inRev">2027 revenue plan ($000)</label><input id="inRev" type="number" min="0" step="1000" placeholder="e.g. 320000"></div>
+      <div class="fld"><label for="inTarget">Board cap on 2027 tech spend ($000)</label><input id="inTarget" type="number" min="0" step="100" placeholder="e.g. 10500"></div>
+    </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+  <div class="pane" data-pane="overview">
+    <div class="figs" id="figs"></div>
+
+    <section class="card">
+      <div class="card-h">
+        <div>
+          <h2>How 2026 becomes 2027</h2>
+          <p id="bridgeSub"></p>
+        </div>
+      </div>
+      <div class="card-b"><div class="svgwrap"><svg id="bridge" viewBox="0 0 980 352" role="img" aria-label="Waterfall bridge from the 2026 base to the 2027 plan"></svg></div></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h">
+        <div>
+          <h2>Where the concentration is</h2>
+          <p id="concSub"></p>
+        </div>
+        <div class="seg" id="segTopN" style="max-width:250px">
+          <button data-n="5" aria-pressed="true">Top 5</button>
+          <button data-n="10" aria-pressed="false">Top 10</button>
+          <button data-n="20" aria-pressed="false">Top 20</button>
+        </div>
+      </div>
+      <div class="card-b">
+        <div class="legend"><span><i style="background:var(--accent-pale)"></i><span id="concBase">2026 forecast</span></span><span><i style="background:var(--fill-blue)"></i>2027 budget</span></div>
+        <div id="topv"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-h">
+        <div>
+          <h2>Split the plan</h2>
+          <p>Choose how to cut the portfolio. Add a second dimension to see what sits inside each group.</p>
+        </div>
+        <button class="tag g" id="btnCsvPivot">Download this split as CSV</button>
+      </div>
+      <div class="tools">
+        <label class="pl">Break down by
+          <select id="dimA" aria-label="Primary dimension"></select></label>
+        <label class="pl">then by
+          <select id="dimB" aria-label="Secondary dimension"></select></label>
+        <label class="pl">Measure
+          <select id="meas" aria-label="Measure">
+            <option value="v27">2027 plan</option>
+            <option value="base">2026 base</option>
+            <option value="chg">Change vs 2026 base</option>
+          </select></label>
+        <button class="tag" id="pivShare" aria-pressed="false">Show as % of row</button>
+        <span class="tcount" id="pivCount"></span>
+      </div>
+      <div class="card-b">
+        <div class="legend" id="pivLegend"></div>
+        <div id="pivBars"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-h"><div><h2 id="matTitle">The numbers behind it</h2>
+        <p>Every cell is live. Select a row to carry it through to the vendor list.</p></div></div>
+      <div class="tscroll"><div id="matrix"></div></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h">
+        <div><h2>Growth rate spread</h2>
+          <p>How many vendors, and how much money, sit in each growth band under the current assumptions.</p></div>
+      </div>
+      <div class="card-b"><div id="bands"></div></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h">
+        <div>
+          <h2>What the terminations really save</h2>
+          <p>Eight vendors are being switched off. Three of them hand their spend to something else, so only part of this is a saving.</p>
+        </div>
+      </div>
+      <div class="card-b"><div id="termCheck"></div></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h">
+        <div>
+          <h2>Which assumption moves the number most</h2>
+          <p>Dollar swing in the 2027 plan if each lever alone moves. Growth rates are tested at plus and minus 10 points; switches are tested on versus off.</p>
+        </div>
+      </div>
+      <div class="card-b"><div id="tornado"></div></div>
+    </section>
   </div>
-</dialog>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <div class="pane" data-pane="vendors" hidden>
+    <section class="card">
+      <div class="card-h">
+        <div>
+          <h2>Every vendor</h2>
+          <p>Type over any growth rate to test a single vendor. Tick the cut box to model removing one entirely.</p>
+        </div>
+        <button class="tag g" id="btnCsv">Download this view as CSV</button>
+      </div>
+      <div class="tools">
+        <input type="search" id="q" placeholder="Search vendor, tool, owner or note" aria-label="Search vendors">
+        <select id="fCat" aria-label="Filter by category"></select>
+        <select id="fStatus" aria-label="Filter by status"></select>
+        <select id="fOwner" aria-label="Filter by owner"></select>
+        <button class="tag" id="fFlag" aria-pressed="false">Flagged rows only</button>
+        <button class="tag" id="fBig" aria-pressed="false">$50K and above</button>
+        <button class="tag g" id="fTop" aria-pressed="false">Top 5 only</button>
+        <span class="tcount" id="tcount"></span>
+      </div>
+      <div id="pickBar"></div>
+      <div class="tscroll"><table id="tbl">
+        <thead><tr id="thr"></tr></thead>
+        <tbody id="tb"></tbody>
+      </table></div>
+    </section>
+
+    <section class="card" style="margin-top:18px">
+      <div class="card-h">
+        <div>
+          <h2>Raw data</h2>
+          <p>The CSV exactly as it sits, all 26 columns. Edit any cell, then either apply the
+             change here or write it back to the repository. Saving recalculates every tab.</p>
+        </div>
+        <div class="rawhead">
+          <span class="rawflag" id="rawDirty" hidden>unsaved edits</span>
+          <span class="tag filebtn">Open a CSV<input type="file" id="rawFile" accept=".csv,text/csv" aria-label="Open a CSV file"></span>
+          <button class="tag" id="btnRawDl">Download</button>
+          <button class="tag" id="btnRawAdd">Add row</button>
+          <button class="tag" id="btnRawRevert">Revert</button>
+          <button class="tag" id="btnRawCfg">Repository…</button>
+          <button class="tag" id="btnRawApply">Apply to model</button>
+          <button class="tag g" id="btnRawSave">Save to GitHub</button>
+        </div>
+      </div>
+      <p class="ghstatus" id="ghStatus" hidden></p>
+      <div class="tools">
+        <input type="search" id="rawQ" placeholder="Search every column" aria-label="Search the raw rows">
+        <span class="tcount" id="rawCount"></span>
+      </div>
+      <div class="tscroll rawscroll"><table id="rawTbl">
+        <colgroup id="rawCols"></colgroup>
+        <thead><tr id="rawThr"></tr></thead>
+        <tbody id="rawTb"></tbody>
+      </table></div>
+    </section>
+
+  </div>
+
+  <div class="pane" data-pane="risks" hidden>
+    <section class="card">
+      <div class="card-h">
+        <div>
+          <h2>What could go wrong</h2>
+          <p>Counts come from the workbook: dark-red flagged cells, ownership gaps and cells typed over their formulas.</p>
+        </div>
+      </div>
+      <div class="risks" id="risks"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-h">
+        <div>
+          <h2>Open questions before sign-off</h2>
+          <p>Rebuilt from the data every time it changes, with the money each item puts at stake.</p>
+        </div>
+      </div>
+      <div class="issues" id="issues"></div>
+    </section>
+  </div>
+
+    <div class="foot" id="foot"></div>
+  </main>
+</div>
+
+
+<div class="modal" id="ghModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ghTitle">
+    <h2 id="ghTitle">Write this CSV back to GitHub</h2>
+    <p class="lede">The token is held in this browser tab only, in session storage. It is never
+       written to the page, the repository or any file, and it disappears when you close the tab.</p>
+    <div class="body">
+      <div class="held" id="ghHeld" hidden>A token is already held for this tab. Leave the field blank to reuse it.</div>
+      <div class="fld">
+        <label for="ghTok">Personal access token</label>
+        <input type="password" id="ghTok" autocomplete="off" spellcheck="false">
+        <p class="hint">A fine-grained token scoped to this one repository with
+           <b>Contents: read and write</b> is enough. A classic token needs <b>repo</b>.</p>
+      </div>
+      <div class="row2">
+        <div class="fld"><label for="ghOwner">Owner</label><input id="ghOwner" spellcheck="false"></div>
+        <div class="fld"><label for="ghRepo">Repository</label><input id="ghRepo" spellcheck="false"></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label for="ghBranch">Branch</label><input id="ghBranch" spellcheck="false"></div>
+        <div class="fld"><label for="ghPath">Path to the CSV</label><input id="ghPath" spellcheck="false"></div>
+      </div>
+      <div class="fld"><label for="ghMsg">Commit message</label><input id="ghMsg"></div>
+      <p class="err" id="ghErr"></p>
+    </div>
+    <div class="acts">
+      <button class="tag grow" id="ghForget">Forget the token</button>
+      <button class="tag" id="ghCancel">Cancel</button>
+      <button class="tag g" id="ghSave" aria-pressed="true">Save and commit</button>
+    </div>
+  </div>
+</div>
+
+<div class="tray" id="tray">
+  <span class="tn num" id="trayN">—</span>
+  <span class="tl" id="trayL"></span>
+  <button class="tbtn" id="trayClear">Restore all</button>
+</div>
+
+<script type="text/plain" id="csvFallback">Vendor Master — Tech Software & Cloud Budget,,,,,,,,,,,,,,,,,,,,,,,,,
+Financial rollup + operational ownership in one source of truth. Backend contract fields are intentionally moved to the far right for later enrichment.,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,
+Vendor,Service / Tool,Description,Service Model,Category,Department,System Owner,Status,Rollup?,Cost Driver,2025 Actual ($000),2026 Budget ($000),2026 Forecast ($000),2026 Var vs Budget ($000),2026 Var %,YoY 2025→2026,Default Growth %,Override Growth %,Applied Growth %,2027 Budget ($000),2027 YoY %,Is AWS Marketplace?,Notes / Decision,Licensed / Contract Users2,Price / User / Yr ($),Renewal Date
+"Datadog, Inc.",Datadog,"Monitoring and observability platform for metrics, logs, traces and production alerting.",SaaS,Cloud & Infrastructure,Technology Shared,Shay Fainberg,Active,Yes,Data / Usage,,$859.1,$710.0,($149.1),-17.4%,,20.0%,,% from AWS,$938.1,32.1%,,33% from AWS cost,,,
+Amazon Web Services,AWS,"Cloud infrastructure platform for compute, storage, networking, databases and related AWS services.",IaaS,Cloud & Infrastructure,Infrastructure,Shay Fainberg,Active,Yes,Data / Usage,,"$1,535.0","$1,995.0",$460.0,30.0%,,20.0%,,42.5%,"$2,842.9",42.5%,,,,,
+Qmasters Security Services Ltd,Qmasters,,SaaS,Security,Security,Shay Fainberg,Active,Yes,Data / Usage,,$486.7,$486.0,($0.7),-0.1%,,20.0%,,20.0%,$583.2,20.0%,,index data (security aert per day),,,
+Google,Google Workspace,,SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Per User / Seat,,$180.0,$190.0,$10.0,5.6%,,10.0%,,10.0%,$209.0,10.0%,,900 users - 13.8$ per user (till Sep 2026) - plan ro go to 23$,,,
+Google,Google Workspace - Archive,,SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Per User / Seat,,$81.6,$85.0,$3.4,4.2%,,10.0%,,10.0%,$93.5,10.0%,,5$ per user per month (1350 Users),,,
+Google,Cloud,,SaaS,Cloud & Infrastructure,IT,Tal Eliaz,Active,Yes,Data / Usage,,$131.0,$133.0,$2.0,1.5%,,20.0%,,20.0%,$159.6,20.0%,,include Marketing project,,,
+Atlassian,Jira / Confluence,"Jira and Confluence for work tracking, engineering workflows and documentation.",SaaS,IT & Productivity,Technology Shared,Tal Eliaz,Active,Yes,Per User / Seat,,$215.4,$220.0,$4.6,2.1%,,10.0%,,10.0%,$242.0,10.0%,,"Tech users
+Reduce 40-50K from OpsGenie ",,,
+2 AI Tool + 1 Mash Solution,AI tooling pool,"Securitr tools: Rogue, Clover, Blast",SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$200.0,$110.0,($90.0),-45.0%,,20.0%,,20.0%,$132.0,20.0%,,Rogue - 50; Clover - 35; Blast - 36,,,
+Amazon,Amazon services - Backup account,"Employee productivity, endpoint, workplace or IT administration tooling.",IaaS,Cloud & Infrastructure,Infrastructure,Shay Fainberg,Active,Yes,Per User / Seat,,$197.1,$197.0,($0.1),-0.1%,,10.0%,,% from AWS,$341.1,73.2%,,12% from AWS cost,,,
+U-B Tech Solutions Ltd.,Microsoft / reseller services,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Per User / Seat,,$157.8,$198.0,$40.2,25.5%,,10.0%,,10.0%,$217.8,10.0%,,Windows users + hosting (smaller),,,
+Cyera US Inc.,Cyera,Data security posture management and sensitive-data discovery/protection.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$153.7,$155.0,$1.3,0.8%,,20.0%,,20.0%,$186.0,20.0%,,Maybe will not be renewed ,,,
+ZOOM.US,Zoom,"Video conferencing, meetings and webinars.",SaaS,Collaboration,Company Shared,Tal Eliaz,Active,Yes,Per User / Seat,,$142.8,$140.0,($2.8),-2.0%,,10.0%,,10.0%,$154.0,10.0%,,"not call center users, telephony. webinars. ",,,
+Twilio Inc.,Twilio,Programmable communications platform for messaging and related customer communications.,SaaS,Communications,Product,Einav Fleishman,Active,Yes,Business Growth / Customer Usage,,$131.8,$252.0,$120.2,91.2%,,25.0%,,25.0%,$315.0,25.0%,,sms - consumer based ,,,
+Slack (Salesforce),Slack,Company messaging and collaboration platform.,SaaS,Collaboration,Technology Shared,Tal Eliaz,Active,Yes,Per User / Seat,,$124.7,$114.0,($10.7),-8.6%,,10.0%,,50.0%,$171.0,50.0%,,Users + plan (Pro+): renewal require change plan,,,
+"Cloudflare, Inc.",Cloudflare,"Web application security, CDN, DNS and zero-trust/network edge services.",SaaS,Security,Security,Shay Fainberg / Tal Eliaz,Active,Yes,Security,,$117.6,$120.0,$2.4,2.0%,,20.0%,,20.0%,$144.0,20.0%,,VPN - User based (Okta),,,
+"Ekata, INC / Mastercard",Ekata,"Security software or services supporting cyber-risk reduction, identity, data protection or compliance.",SaaS,Security,Product,Shay Fainberg,Active,Yes,Business Growth / Customer Usage,,$99.8,$90.0,($9.8),-9.8%,,20.0%,,20.0%,$108.0,20.0%,,Identity / verification lookup volume tied to business transactions - lookup for phone numbers - consumer based ,,,
+Microblink,Microblink,,SaaS,Engineering Platform,Product,,Active,Yes,Business Growth / Customer Usage,,$90.5,$137.0,$46.5,51.4%,,25.0%,,25.0%,$171.3,25.0%,,iPads - Freaud? ,,,
+monday.com ltd,Monday.com,Work management and workflow/project tracking platform.,SaaS,IT & Productivity,Company Shared,Tal Eliaz,Active,Yes,Per User / Seat,,$90.3,$80.0,($10.3),-11.4%,,10.0%,,10.0%,$88.0,10.0%,,"Do we want to split between units? (legal, marketing, ops.. ",,,
+"Sigma Computing, INC.",Sigma,Reporting tool > Cloud analytics and BI platform for querying and analyzing warehouse data.,SaaS,Data & Analytics,Data,Cindy Musco,Active,Yes,Per User / Seat,,$83.0,$90.0,$7.0,8.4%,,10.0%,,10.0%,$99.0,10.0%,,"Paid only for adnacned users, not viewers",,,
+"Box, Inc.",Box,"Collaboration, messaging or team communication platform.",SaaS,Collaboration,IT,Tal Eliaz,Active,Yes,Per User / Seat,,$79.2,$106.0,$26.8,33.8%,,10.0%,,10.0%,$116.6,10.0%,,Shared folders - also external,,,
+Catamorphic Co. DBA LaunchDarkly,LaunchDarkly,Feature management and feature-flag platform for software delivery.,SaaS,Engineering Platform,,Einav Fleishman,Active,Yes,Fixed Contract,,$76.1,$77.0,$0.9,1.2%,,3.0%,,3.0%,$79.3,3.0%,AWS Marketplace,Validate with Yaniv if usage based or fixed,אחד בגרף של 2027 Investment פר קטגוריה.,,
+Remote Control / Software Deployment & Automation,Remote control / deployment,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Per User / Seat,,$75.0,$75.0,-,0.0%,,10.0%,,10.0%,$82.5,10.0%,,,,,
+Commit Technologies Solutions LTD,Commit,External engineering or technical services.,SaaS,Engineering Services,Engineering,Shay Fainberg,Active,Yes,Fixed Contract,,$64.1,$64.0,($0.1),-0.2%,,3.0%,,3.0%,$65.9,3.0%,,,,,
+Groundcover,Groundcover,Cloud-native observability and application monitoring.,SaaS,Cloud & Infrastructure,Engineering,Shay Fainberg,Terminate,Yes,Data / Usage,,$61.7,$26.0,($35.7),-57.9%,,20.0%,,20.0%,-,-100.0%,,,,,
+Github,GitHub,"Source code hosting, pull requests, CI/CD integrations and developer collaboration.",SaaS,Engineering Platform,Engineering,Shay Fainberg,Active,Yes,Per User / Seat,,$61.5,$60.0,($1.5),-2.4%,,10.0%,,10.0%,$66.0,10.0%,,,,,
+"UserTesting, Inc.",UserTesting,User research and usability-testing platform.,SaaS,Product & Research,Product,Einav Fleishman,Active,Yes,Fixed Contract,,$60.0,$30.0,($30.0),-50.0%,,3.0%,,3.0%,$30.9,3.0%,,Need to be replace with new tool,,,
+"RecoLabs, Inc.",RecoLabs,SaaS security posture / application access risk management.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$57.0,$57.0,-,0.0%,,20.0%,,20.0%,$68.4,20.0%,,,,,
+Mailgun,Mailgun,Customer or operational communications platform.,SaaS,Communications,Engineering,Shay Fainberg,Active,Yes,Business Growth / Customer Usage,,$56.8,$66.0,$9.2,16.2%,,25.0%,,25.0%,$82.5,25.0%,,# of customers email -,,,
+Docker,Docker,Container development and runtime tooling.,SaaS,Engineering Platform,Infrastructure,Shay Fainberg,Active,Yes,Fixed Contract,,$56.6,$40.0,($16.6),-29.3%,,3.0%,,5.0%,$42.0,5.0%,,,,,
+"Appcues, Inc.",Appcues,"Product management, design, analytics or user-research tooling.",SaaS,Product & Research,Product,Einav Fleishman,Active,Yes,Business Growth / Customer Usage,,$51.3,$51.0,($0.3),-0.6%,,25.0%,,10.0%,$56.1,10.0%,,#of mechants - maybe less than 20% > took 10%,,,
+Cursor AI,Cursor,AI-assisted code editor used by engineering teams for software development.,SaaS,AI & Developer Tools,Engineering,Shay Fainberg,Active,Yes,AI / Token Usage,,$50.1,$350.0,$299.9,598.6%,,40.0%,,40.0%,$490.0,40.0%,,RR-720/ token based/ 1200$ per month - per tech emp. Open to discuss,,,
+"Mitiga Security, Inc.",Mitiga,"Security software or services supporting cyber-risk reduction, identity, data protection or compliance.",SaaS,Security,Security,Shay Fainberg,Terminate,Yes,Security,,$50.0,$600.0,$550.0,1100.0%,,20.0%,,20.0%,-,0.0%,,Replacment?,,,
+Koi Security Inc.,Koi Security,"Security software or services supporting cyber-risk reduction, identity, data protection or compliance.",SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$50.0,$51.0,$1.0,2.0%,,20.0%,,20.0%,$61.2,20.0%,,,,,
+Lumina,Lumina,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$50.0,$55.0,$5.0,10.0%,,20.0%,,20.0%,$66.0,20.0%,,vendor change name - Bold,,,
+Jetbrains,JetBrains,"Software engineering platform supporting development, delivery or reliability workflows.",SaaS,Engineering Platform,Engineering,Shay Fainberg,Active,Yes,Per User / Seat,,$49.1,$50.0,$0.9,1.8%,,10.0%,,10.0%,$55.0,10.0%,,,,,
+GMELIUS,Gmelius,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Per User / Seat,,$46.3,$15.0,($31.3),-67.6%,,10.0%,,10.0%,$16.5,10.0%,,call center budget?,,,
+Aikido Security BV,Aikido,"Security software or services supporting cyber-risk reduction, identity, data protection or compliance.",SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$45.0,$45.0,-,0.0%,,20.0%,,20.0%,$54.0,20.0%,,,,,
+2 AI Production Tools,AI production tools,AI-enabled engineering or developer productivity tooling.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$40.0,$36.0,($4.0),-10.0%,,20.0%,,20.0%,$43.2,20.0%,,True Foundery,,,
+Mixpanel INC,Mixpanel,"Product analytics for user behavior, events and product adoption.",SaaS,Data & Analytics,Data,Shay Fainberg,Active,Yes,Business Growth / Customer Usage,,$36.5,$36.0,($0.5),-1.4%,,25.0%,,25.0%,$45.0,25.0%,,Event / product usage volume may scale with business users; validate contract metric.,,,
+GRC Tool,GRC Tool,"Security software or services supporting cyber-risk reduction, identity, data protection or compliance.",SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$30.0,$30.0,-,0.0%,,20.0%,66.8%,66.8%,$50.0,66.8%,,Flat 50.,,,
+OpsGenie,OpsGenie,"On-call scheduling, alerting and incident response coordination.",SaaS,Engineering Platform,Engineering,Shay Fainberg,Terminate - New vendor,Yes,Fixed Contract,,$29.3,$30.0,$0.7,2.4%,,3.0%,,3.0%,-,-100.0%,,Replacment with incidentIO,,,
+Adobe,Adobe,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,Technology Shared,Tal Eliaz,Active,Yes,Per User / Seat,,$29.1,$45.0,$15.9,54.6%,,10.0%,,10.0%,$49.5,10.0%,,should move to Marketing?,,,
+"LinearB, Inc.",LinearB,"Software engineering platform supporting development, delivery or reliability workflows.",SaaS,Engineering Platform,Engineering,Shay Fainberg,Terminate - New vendor,Yes,Fixed Contract,,$28.4,$45.0,$16.6,58.5%,,3.0%,,3.0%,-,-100.0%,,Replacement with DX,,,
+UnCloud Ltd,UnCloud,"Infrastructure or cloud platform supporting compute, hosting, networking or core runtime services.",SaaS,Cloud & Infrastructure,Engineering,Cindy Musco,Active,Yes,Per User / Seat,,$23.0,$38.0,$15.0,65.2%,,10.0%,,10.0%,$41.8,10.0%,,per MAC users,,,
+Citadel Consulting Ltd (Fortimail),Fortimail,"Security software or services supporting cyber-risk reduction, identity, data protection or compliance.",SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$22.5,$30.0,$7.5,33.3%,,20.0%,,20.0%,$36.0,20.0%,AWS Marketplace,,,,
+SecureFlag,SecureFlag,Secure-coding training for developers.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$20.7,$21.0,$0.3,1.4%,,20.0%,,20.0%,$25.2,20.0%,,,,,
+AgileBits Inc dba 1Password,1Password,Enterprise password management and secrets/access tooling.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$20.7,$20.0,($0.7),-3.4%,,20.0%,,20.0%,$24.0,20.0%,,,,,
+ITE Solutions Inc.,ITE Solutions,security cameras ,SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Fixed Contract,,$18.7,$24.0,$5.3,28.3%,,3.0%,,3.0%,$24.7,3.0%,,,,,
+"Figma, Inc",Figma,Collaborative product design and prototyping platform.,SaaS,Product & Research,Product,Einav Fleishman,Active,Yes,Per User / Seat,,$15.3,$19.0,$3.7,24.2%,,10.0%,,10.0%,$20.9,10.0%,,Will not be 10% > might be much bigger - TBD Sep10th,,,
+"Grammarly, Inc",Grammarly,AI-assisted writing and communication tool.,SaaS,IT & Productivity,Technology Shared,Tal Eliaz,Active,Yes,Per User / Seat,,$15.2,$15.0,($0.2),-1.3%,,10.0%,,10.0%,$16.5,10.0%,,80 users. ,,,
+"KnowBe4, Inc.",KnowBe4,Security awareness training and phishing simulation.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$12.0,$15.0,$3.0,25.0%,,20.0%,,20.0%,$18.0,20.0%,,,,,
+Smarty,Smarty street,,SaaS,Product & Research,Product,Einav Fleishman,Active,Yes,Business Growth / Customer Usage,,$10.8,$11.0,$0.2,1.9%,,25.0%,,25.0%,$13.8,25.0%,,,,,
+"Oligo Security, Inc.",Oligo,Application/runtime security platform.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$10.0,$18.0,$8.0,80.0%,,20.0%,,20.0%,$21.6,20.0%,,,,,
+"Veriatto, Inc.",Veriato,"Security software or services supporting cyber-risk reduction, identity, data protection or compliance.",SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$10.0,$30.0,$20.0,200.0%,,20.0%,,20.0%,$36.0,20.0%,,,,,
+"Avalor Technologies, Inc.",Avalor,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,IT,Tal Eliaz,Terminate,Yes,Per User / Seat,,$8.0,-,($8.0),-100.0%,,10.0%,,10.0%,-,,,0?,,,
+SonarSource,Sonar,Static code quality and security analysis for software development.,SaaS,Engineering Platform,Engineering,Shay Fainberg,Active,Yes,Fixed Contract,,$7.7,$7.8,$0.1,1.3%,,3.0%,,3.0%,$8.0,3.0%,,small # from AWS,,,
+DMARCIAN,DMARCian,DMARC/email-domain security monitoring and reporting.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$7.2,$7.2,-,0.0%,,20.0%,,20.0%,$8.6,20.0%,,,,,
+"Sourcegraph, Inc.",Sourcegraph,AI-enabled engineering or developer productivity tooling.,SaaS,AI & Developer Tools,Engineering,Shay Fainberg,Terminate,Yes,AI / Token Usage,,$5.9,-,($5.9),-100.0%,,40.0%,,40.0%,-,,,,,,
+UiPath Inc.,UiPath,Workflow automation or orchestration tooling.,SaaS,Automation,Technology Shared,Shay Fainberg,Terminate,Yes,Fixed Contract,,$5.0,-,($5.0),-100.0%,,3.0%,,3.0%,-,,,,,,
+Realtimeboard INC DBA Miro,Miro,"Collaborative whiteboarding, planning and workshop platform.",SaaS,Collaboration,Technology Shared,Einav Fleishman,Active,Yes,Per User / Seat,,$4.6,$6.7,$2.1,45.7%,,10.0%,,10.0%,$7.4,10.0%,,,,,
+Swimm,Swimm,Developer documentation and engineering knowledge platform.,SaaS,Engineering Platform,Engineering,Shay Fainberg,Active,Yes,Fixed Contract,,$4.1,$4.0,($0.1),-2.4%,,3.0%,,3.0%,$4.1,3.0%,,,,,
+Anthropic,Claude / Anthropic,Generative AI / Claude access for experimentation and engineering use cases.,SaaS,AI & Developer Tools,Engineering,Shay Fainberg,Active,Yes,AI / Token Usage,,$3.6,$90.0,$86.4,2400.0%,,40.0%,,40.0%,$126.0,40.0%,,(today - 70users) - Corp users (no CallCenter users),,,
+Neutrino Api,Neutrino API,"Data, analytics or reporting platform supporting business or technical insight.",SaaS,Data & Analytics,Engineering,Shay Fainberg,Active,Yes,Data / Usage,,$3.2,$3.2,-,0.0%,,20.0%,,20.0%,$3.8,20.0%,,,,,
+MongoDB Cloud,MongoDB,"Data, analytics or reporting platform supporting business or technical insight.",IaaS,Cloud & Infrastructure,,Shay Fainberg,Active,Yes,Data / Usage,,$234.3,$264.0,$29.7,12.7%,,20.0%,,20.0%,$316.8,20.0%,AWS Marketplace,,,,
+Paul W Stott Jr dba Warrior Networks,Warrior Networks,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Per User / Seat,,$2.7,$7.0,$4.3,159.3%,,10.0%,,10.0%,$7.7,10.0%,,,,,
+OpenAI,OpenAI,Generative AI and API services for experimentation and production use cases.,SaaS,AI & Developer Tools,Engineering,Tal Eliaz,Active,Yes,Per User / Seat,,$2.4,$5.5,$3.1,129.2%,,10.0%,,10.0%,$6.1,10.0%,,,,,
+Tenable,Tenable,Vulnerability management and security scanning.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$2.3,$2.3,-,0.0%,,20.0%,,20.0%,$2.8,20.0%,,,,,
+FS-ISAC INC,FS-ISAC,Financial-services cybersecurity intelligence and membership.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$2.2,$2.2,-,0.0%,,20.0%,,20.0%,$2.6,20.0%,,,,,
+Have I Been Pwned,Have I Been Pwned,Breach and credential-exposure intelligence service.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$2.0,$2.0,-,0.0%,,20.0%,,20.0%,$2.4,20.0%,,,,,
+Mxtoolbox,MXToolbox,"DNS, email and mail-server monitoring/troubleshooting tools.",SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$1.8,$3.5,$1.7,94.4%,,20.0%,,20.0%,$4.2,20.0%,,,,,
+Loggly,Loggly,Cloud log aggregation and monitoring.,SaaS,Cloud & Infrastructure,Engineering,Shay Fainberg,Active,Yes,Data / Usage,,$1.2,$1.6,$0.4,33.3%,,20.0%,,20.0%,$1.9,20.0%,,,,,
+Ziptax,ZipTax,"Data, analytics or reporting platform supporting business or technical insight.",SaaS,Data & Analytics,Engineering,Shay Fainberg,Active,Yes,Data / Usage,,$1.2,$1.6,$0.4,33.3%,,20.0%,,20.0%,$1.9,20.0%,,,,,
+BALSAMIQ,Balsamiq,Low-fidelity wireframing and product design tool.,SaaS,Product & Research,Product,Einav Fleishman,Terminate,Yes,Fixed Contract,,$0.6,$0.6,-,0.0%,,3.0%,,3.0%,-,-100.0%,,,,,
+APP.BITRISE.IO,Bitrise,Mobile CI/CD and build automation platform.,SaaS,Engineering Platform,Engineering,Shay Fainberg,Active,Yes,Fixed Contract,,$0.5,$0.5,-,0.0%,,3.0%,,3.0%,$0.5,3.0%,,,,,
+"MIXMAX, INC",Mixmax,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,Technology Shared,Tal Eliaz,Active,Yes,Per User / Seat,,$0.4,$3.0,$2.6,650.0%,,10.0%,,10.0%,$3.3,10.0%,,,,,
+Excalidraw,Excalidraw,Collaborative lightweight diagramming / whiteboarding.,SaaS,Collaboration,Engineering,Tal Eliaz,Active,Yes,Per User / Seat,,$0.4,$0.4,-,0.0%,,10.0%,,10.0%,$0.4,10.0%,,,,,
+PLURALSIGHT,Pluralsight,"Training, learning or employee enablement platform.",SaaS,IT & Productivity,Technology Shared,Shay Fainberg,Active,Yes,Per User / Seat,,$0.3,$0.4,$0.1,20.0%,,10.0%,,10.0%,$0.4,10.0%,,,,,
+"ZEPLIN, INC.",Zeplin,"Product management, design, analytics or user-research tooling.",SaaS,Product & Research,Product,Einav Fleishman,Terminate,Yes,Fixed Contract,,$0.3,$0.3,-,0.0%,,3.0%,,3.0%,-,-100.0%,,,,,
+Godaddy.com,GoDaddy,"Domain registration, renewals and related web services.",SaaS,Cloud & Infrastructure,IT,Shay Fainberg,Active,Yes,Per User / Seat,,$0.3,$3.3,$3.0,1000.0%,,10.0%,,10.0%,$3.6,10.0%,,,,,
+STATUSCAKE,StatusCake,"Monitoring, logs, telemetry or observability tooling for production systems.",SaaS,Cloud & Infrastructure,Engineering,Shay Fainberg,Active,Yes,Data / Usage,,$0.3,$0.3,-,0.0%,,20.0%,,20.0%,$0.4,20.0%,,,,,
+Vercel Inc.,Vercel,"Software engineering platform supporting development, delivery or reliability workflows.",SaaS,Engineering Platform,Infrastructure,Shay Fainberg,Active,Yes,Fixed Contract,,$0.2,$0.2,-,0.0%,,3.0%,,3.0%,$0.2,3.0%,,Future Website - will be used by Marketing,,,
+Windsurf,Windsurf,AI-enabled engineering or developer productivity tooling.,SaaS,AI & Developer Tools,Engineering,Shay Fainberg,Active,Yes,AI / Token Usage,,$0.2,$0.2,-,0.0%,,40.0%,,40.0%,$0.3,40.0%,,,,,
+Moderne,Moderne,"Software engineering platform supporting development, delivery or reliability workflows.",SaaS,Engineering Platform,Engineering,Shay Fainberg,Active,Yes,Per User / Seat,,-,$46.0,$46.0,,,10.0%,,10.0%,$50.6,10.0%,,,,,
+n8n,n8n,Workflow automation or orchestration tooling.,SaaS,Automation,Engineering,Shay Fainberg,Active,Yes,Data / Usage,,-,$54.5,$54.5,,,20.0%,,20.0%,$65.4,20.0%,,Marketing tray.o; (to be added to n8n),,,
+Vitru,Vitru,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,Technology Shared,Shay Fainberg,Active,Yes,Per User / Seat,,-,$43.0,$43.0,,,10.0%,,10.0%,$47.3,10.0%,,,,,
+"Ensemble Labs, Inc.",Ensemble Labs,"Data, analytics or reporting platform supporting business or technical insight.",SaaS,Security,Security,Shay Fainberg,Active,Yes,Data / Usage,,-,$35.0,$35.0,,,20.0%,,20.0%,$42.0,20.0%,,,,,
+NordVPN,NordVPN,Corporate VPN / secure remote-network access for selected users.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,-,$1.5,$1.5,,,20.0%,,20.0%,$1.8,20.0%,,,,,
+Anydesk,AnyDesk,Remote desktop support and remote access tooling.,SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Fixed Contract,,-,$1.5,$1.5,,,3.0%,,3.0%,$1.5,3.0%,,,,,
+Lumens.Com,Lumens,"Employee productivity, endpoint, workplace or IT administration tooling.",SaaS,IT & Productivity,IT,Tal Eliaz,Terminate,Yes,Per User / Seat,,-,$0.7,$0.7,,,10.0%,,10.0%,-,-100.0%,,,,,
+Comodo SSL,Comodo SSL,TLS/SSL certificates and related certificate services.,SaaS,Security,Security,Shay Fainberg,Active,Yes,Fixed Contract,,-,$0.9,$0.9,,,20.0%,,20.0%,$1.1,20.0%,,,,,
+Acryl Data,Acryl Data,Metadata Management Platform,SaaS,Data & Analytics,Data,Shay Fainberg,Terminate - cost transition toexisting vendor,Yes,Fixed Contract,,-,$60.0,,,,3.0%,,3.0%,-,,AWS Marketplace,Terminate> cost move to Snowflax,,,
+AWS Bedrock AI (New expected usage),AWS Bedrock AI,Managed access to foundation models through AWS Bedrock for planned AI workloads.,SaaS,AI & Developer Tools,Engineering,Shay Fainberg,Active,Yes,AI / Token Usage,,-,$37.5,$37.5,,,40.0%,,40.0%,$52.5,40.0%,,,,,
+Product new tool (new) - AI Tool,New Product Tool,"Product management, design, analytics or user-research tooling.",SaaS,Product & Research,Product,Einav Fleishman,Planned,Yes,Fixed Contract,,,-,,,,3.0%,,3.0%,$30.0,,,TBD - AI tool,,,
+incident.io,incident.io,"Incident management, response coordination and operational learning.",IaaS,Engineering Platform,Engineering,Shay Fainberg,Active,Yes,Fixed Contract,,-,-,-,,,3.0%,,3.0%,$50.0,,,,,,
+Snowflake Inc.,Snowflake,Cloud data warehouse / analytics platform.,IaaS,Cloud & Infrastructure,Data,Shay Fainberg,Active,Yes,Fixed Contract,,$264.0,$402.0,$138.0,,,3.0%,,42.6%,$573.3,,,3% grow month over month. Without AI cost,,,
+Terra Security,Terra Security Agentic AI penetration test,,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$70.0,$70.0,,,,20.0%,71.4%,71.4%,$120.0,,AWS Marketplace,120K per year,,,
+WIZ,WIZ Cloud Infrastructure Security Platform,Cloud computing  ,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$130.0,$130.0,-,,,20.0%,,20.0%,$156.0,,AWS Marketplace,X% from AWS cost,,,
+Aviatrix Cloud Network,Aviatrix Cloud Network License Service - Private offer,,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$21.4,$22.0,$0.6,,,20.0%,,20.0%,$26.4,,,,,,
+,Claude Models (Bedrock Edition),,SaaS,Security,Security,Shay Fainberg,Active,Yes,Security,,$6.9,$10.0,$3.1,,,20.0%,,20.0%,$12.0,,,,,,
+Okta,Auth0 - Okta Custom Software Package 2,for Sunbeast users,SaaS,Engineering Platform,Product,Tal Eliaz,Active,Yes,Business Growth / Customer Usage,,$70.0,$92.0,$22.0,,,25.0%,,25.0%,$115.0,,AWS Marketplace,Should move to Ops?,,,
+Okta,Auth0 - Okta Custom Software Package 3,,SaaS,Security,IT,Tal Eliaz,Terminate,Yes,Per User / Seat,,$8.0,$8.0,-,,,20.0%,,0.0%,-,,,,,,
+Okta,Okta Custom Software Package 4,"Identity provider, SSO and employee access management.",SaaS,Cloud & Infrastructure,IT,Tal Eliaz,Active,Yes,Per User / Seat,,153.5,$153.5,-,,,10.0%,,10.0%,$168.9,10.0%,AWS Marketplace,internal users (company level) + vendors,,,
+DX,DX,Developer experience and engineering productivity analytics/platform.,SaaS,Engineering Platform,Engineering,Shay Fainberg,Active,Yes,Per User / Seat,,-,$58.0,$58.0,,,10.0%,,10.0%,$63.8,,,,,,
+IT New tools,,IT centrelized management ,SaaS,IT & Productivity,IT,Tal Eliaz,Future,Yes,Per User / Seat,,,,,,,10.0%,,,$75.0,,,,,,
+TigerGraph Cloud (AWS),TigerGraph Cloud,Managed graph database platform for relationship / fraud use cases.,IaaS,Data & Analytics,Data,Shay Fainberg,Active,Yes,Data / Usage,,$49.2,$50.0,$0.8,,,20.0%,,20.0%,$60.0,20.0%,AWS Marketplace,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,
+כל השורות צריכות לעשות רולאפ. ,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,
+"אני תיקנתי את זה כי הקובץ בנוי בצורה שהכל צריך להיספר, וה-Terminated גם ככה. ",,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,
+"דאגתי לשים אותו על אפס, אז אם אתה רוצה, רועי, סתירה של Terminated ולא אפס, אז תגיד לי. ",,,,,,,,,,,,,,,,,,,,,,,,,</script>
 <script>
-/* ===== הגדרות. ריק = זיהוי אוטומטי מכתובת ה-GitHub Pages ===== */
-var CFG = { owner: "", repo: "", branch: "main", path: "data.csv" };
+/* =======================================================================
+   DATA LAYER — everything below is derived from the CSV at run time.
+   Nothing about the vendor list is hardcoded any more.
+   ======================================================================= */
 
-var HEAD = [], ROWS = [], ORIG = "", SHA = null;
+/* Where to read the CSV from. Relative, so it works on GitHub Pages. */
+const CSV_URL = "Tech_Budget_2026_2027_v5.csv";
 
-/* ---------- זיהוי הריפו ---------- */
-var R = (function () {
-  var owner = CFG.owner, repo = CFG.repo;
-  if (!owner && /\.github\.io$/.test(location.hostname))
-    owner = location.hostname.replace(/\.github\.io$/, "");
-  if (!repo) {
-    var seg = location.pathname.split("/").filter(Boolean);
-    repo = (seg.length && !/\.html?$/i.test(seg[0])) ? seg[0] : owner + ".github.io";
+/* Column positions in the Vendor Master sheet. */
+const C = {
+  vendor:0, tool:1, desc:2, model:3, cat:4, dept:5, owner:6, status:7, rollup:8,
+  driver:9, a25:10, bud26:11, fc26:12, varAbs:13, varPct:14, yoy26:15,
+  defG:16, ovrG:17, appG:18, b27:19, yoy27:20, mkt:21, notes:22,
+  users:23, ppu:24, renew:25
+};
+const FIRST_DATA_ROW = 4;   // grid index of the first vendor
+const SHEET_OFFSET   = 5;   // grid index 0 == Vendor Master row 5
+
+/* Dark-red flags live in the spreadsheet's cell formatting, which a CSV
+   cannot carry. These three rows were flagged in the source workbook. */
+const FLAGGED_TOOLS = new Set(["LaunchDarkly","n8n","WIZ Cloud Infrastructure Security Platform"]);
+
+/* Descriptions for the cost-driver rates. Rates themselves come from the
+   Default Growth % column; unknown drivers get a neutral note. */
+const DRV_NOTES = {
+  "Security":"Every vendor in the Security category, whatever its cost driver.",
+  "Per User / Seat":"Spend that scales with licensed users or headcount.",
+  "Fixed Contract":"Contractual or inflationary uplift.",
+  "Data / Usage":"Placeholder — not yet validated against data volume.",
+  "AI / Token Usage":"High-variance placeholder; vendor overrides preferred.",
+  "Business Growth / Customer Usage":"Spend driven by customer volume, messages or transactions."
+};
+/* The discipline scenario halves the discretionary rates where it can. */
+const DISCIPLINE = {
+  "Security":0.10, "Per User / Seat":0.05, "Fixed Contract":0.03,
+  "Data / Usage":0.10, "AI / Token Usage":0.20, "Business Growth / Customer Usage":0.15
+};
+
+/* ---------------- CSV read / write ---------------- */
+function parseCSV(text){
+  text = String(text).replace(/^\uFEFF/,"");
+  const rows=[]; let row=[], cell="", i=0, inQ=false;
+  while(i<text.length){
+    const ch=text[i];
+    if(inQ){
+      if(ch==='"'){ if(text[i+1]==='"'){cell+='"'; i+=2; continue;} inQ=false; i++; continue; }
+      cell+=ch; i++; continue;
+    }
+    if(ch==='"'){ inQ=true; i++; continue; }
+    if(ch===","){ row.push(cell); cell=""; i++; continue; }
+    if(ch==="\r"){ i++; continue; }
+    if(ch==="\n"){ row.push(cell); rows.push(row); row=[]; cell=""; i++; continue; }
+    cell+=ch; i++;
   }
-  return { owner: owner, repo: repo, branch: CFG.branch || "main", path: CFG.path || "data.csv" };
-})();
+  if(cell!=="" || row.length){ row.push(cell); rows.push(row); }
+  return rows;
+}
+function toCSV(rows){
+  const q=s=>{ s=String(s==null?"":s); return /[",\r\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  return "\uFEFF"+rows.map(r=>r.map(q).join(",")).join("\r\n")+"\r\n";
+}
+const pad = (r,n)=>{ const out=r.slice(0,n); while(out.length<n) out.push(""); return out; };
 
-function apiUrl() {
-  return "https://api.github.com/repos/" + R.owner + "/" + R.repo +
-         "/contents/" + encodeURIComponent(R.path);
+/* "$1,535.0" -> 1535 · "($149.1)" -> -149.1 · "-" -> 0 · "" -> null */
+function num(s){
+  if(s==null) return null;
+  let t=String(s).trim();
+  if(t==="" || t==="—" || t==="n/a") return null;
+  if(t==="-" || t==="–") return 0;
+  let neg=false;
+  if(/^\(.*\)$/.test(t)){ neg=true; t=t.slice(1,-1); }
+  t=t.replace(/[$,%\s]/g,"");
+  if(t==="" || isNaN(Number(t))) return null;
+  return neg ? -Number(t) : Number(t);
+}
+const pctOf = s => { const n=num(s); return n==null ? null : n/100; };
+
+/* ---------------- live data ---------------- */
+let GRID=[];                                   // vendor rows, raw strings
+let META={pre:[], header:[], post:[], width:26};// everything around them
+let CSV_TEXT="";                               // last text loaded or saved
+let SOURCE="";                                 // where it came from
+
+let ROWS=[], ISSUES=[], DRV_FILED={}, DRV_META={}, LINK_FILED={}, PRESETS={};
+let AWS_ROW=null, FILED=0;
+
+const isEmptyRow = r => r.every(c=>!String(c||"").trim());
+
+/* A vendor row has to say something structural. Trailing comment lines in the
+   sheet only fill the first column, so they never qualify. */
+function isDataRow(r){
+  if(isEmptyRow(r)) return false;
+  const structural=[C.tool,C.model,C.cat,C.dept,C.status,C.driver].some(i=>String(r[i]||"").trim());
+  const numeric=[C.bud26,C.fc26,C.b27].some(i=>num(r[i])!=null);
+  return structural || numeric;
 }
 
-/* ---------- טוקן ---------- */
-function getTok() { return sessionStorage.getItem("gh_tok") || ""; }
-function setTok(v) { v ? sessionStorage.setItem("gh_tok", v) : sessionStorage.removeItem("gh_tok"); }
-
-function askTok() {
-  return new Promise(function (resolve) {
-    var d = document.getElementById("dlg");
-    $("#tok").val("");
-    d.showModal();
-    $("#tok").focus();
-    function done(ok) {
-      d.close();
-      $("#dlgYes, #dlgNo").off("click");
-      $("#tok").off("keydown");
-      if (ok) setTok($.trim($("#tok").val()));
-      resolve(ok && !!getTok());
-    }
-    $("#dlgYes").on("click", function () { done(true); });
-    $("#dlgNo").on("click", function () { done(false); });
-    $("#tok").on("keydown", function (e) { if (e.key === "Enter") done(true); });
-  });
+/* Split a freshly parsed sheet into preamble / header / vendors / footnotes. */
+function ingest(grid){
+  let h=grid.findIndex(r=>(r[0]||"").trim()==="Vendor" && (r[1]||"").trim()==="Service / Tool");
+  if(h<0) h=FIRST_DATA_ROW-1;
+  const width=Math.max(grid[h].length, 26);
+  const pre=grid.slice(0,h).map(r=>pad(r,width));
+  const header=pad(grid[h],width);
+  const body=grid.slice(h+1).map(r=>pad(r,width));
+  let end=body.findIndex(isEmptyRow);
+  if(end<0) end=body.length;
+  const data=body.slice(0,end).filter(isDataRow);
+  const post=body.slice(end);        // blank lines and working notes, preserved verbatim
+  META={pre,header,post,width};
+  GRID=data;
 }
+const fullGrid = ()=>[...META.pre, META.header, ...GRID.map(r=>pad(r,META.width)), ...META.post];
 
-function authHeaders() {
-  var h = { "Accept": "application/vnd.github+json" };
-  if (getTok()) h.Authorization = "Bearer " + getTok();
-  return h;
-}
+/* ---------------- turn raw strings into model rows ---------------- */
+function buildRows(grid){
+  const out=[];
+  grid.forEach((r,gi)=>{
+    const vendor=(r[C.vendor]||"").trim();
+    const tool=(r[C.tool]||"").trim();
+    const notes=(r[C.notes]||"").trim();
+    const cat=(r[C.cat]||"").trim() || "Unassigned";
+    const deptRaw=(r[C.dept]||"").trim();
+    const owner=(r[C.owner]||"").trim();
+    const driver=(r[C.driver]||"").trim() || "Unassigned";
 
-/* ---------- base64 בטוח ל-UTF-8 ---------- */
-function enc(str) {
-  return btoa(String.fromCharCode.apply(null, new TextEncoder().encode(str)));
-}
-function dec(b64) {
-  var bin = atob(b64.replace(/\s/g, "")), arr = new Uint8Array(bin.length);
-  for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-  return new TextDecoder().decode(arr);
-}
-
-/* ---------- CSV ---------- */
-function parse(text) {
-  var lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
-  HEAD = lines[0].split(",").slice(0, 3);
-  ROWS = lines.slice(1, 11).map(function (l) {
-    var c = l.split(",").slice(0, 3);
-    return [c[0] || "", c[1] || "", c[2] || ""];
-  });
-  ORIG = toCsv();
-  render();
-}
-
-function cell(s) {
-  s = String(s == null ? "" : s);
-  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-}
-
-/* איסוף הנתונים מהטבלה לפורמט CSV */
-function toCsv() {
-  return HEAD.map(cell).join(",") + "\n" +
-         ROWS.map(function (r) { return r.map(cell).join(","); }).join("\n") + "\n";
-}
-
-/* ---------- תצוגה ---------- */
-function render() {
-  var html = '<table><thead><tr><th class="i"></th>';
-  $.each(HEAD, function (_, h) { html += "<th>" + esc(h) + "</th>"; });
-  html += "</tr></thead><tbody>";
-  $.each(ROWS, function (i, r) {
-    html += '<tr><td class="i">' + (i + 1) + "</td>";
-    $.each(r, function (j, v) {
-      html += '<td><input value="' + esc(v) + '" data-r="' + i + '" data-c="' + j + '"></td>';
-    });
-    html += "</tr>";
-  });
-  $("#out").html(html + "</tbody></table>");
-
-  $("#out input").on("input", function () {
-    ROWS[+this.dataset.r][+this.dataset.c] = this.value;
-    $(this).addClass("dirty");
-    check();
-  });
-  check();
-}
-
-function check() {
-  var changed = toCsv() !== ORIG;
-  $("#btnSave").prop("disabled", !changed);
-  if (changed) setMsg("יש שינויים שלא נשמרו.", "");
-  else if (!$("#msg").hasClass("ok")) setMsg("", "");
-}
-
-function setMsg(t, k) { $("#msg").text(t).attr("class", "msg" + (k ? " " + k : "")); }
-function esc(s) {
-  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-  });
-}
-
-function why(xhr, what) {
-  if (xhr.status === 0)   return "לא הצלחתי להגיע ל-GitHub. בדוק חיבור.";
-  if (xhr.status === 401) return "הטוקן נדחה. בדוק שהוא תקף.";
-  if (xhr.status === 403) return "אין הרשאה, או שחרגת ממכסת הבקשות.";
-  if (xhr.status === 404) return R.path + " לא נמצא ב-" + R.owner + "/" + R.repo + " בענף " + R.branch + ".";
-  if (xhr.status === 409) return "הקובץ השתנה בינתיים. טען מחדש.";
-  if (xhr.status === 422) return "מזהה הגרסה אינו עדכני. טען מחדש ונסה שוב.";
-  return what + " נכשלה, סטטוס " + xhr.status + ".";
-}
-
-/* ---------- קריאה ---------- */
-function load() {
-  setMsg("טוען…", "");
-  $.ajax({
-    url: apiUrl() + "?ref=" + R.branch,
-    method: "GET",
-    headers: authHeaders(),
-    cache: false
-  }).done(function (data) {
-    SHA = data.sha;
-    parse(dec(data.content));
-    setMsg("", "");
-  }).fail(function (xhr) {
-    /* גיבוי: קריאת הקובץ הסטטי מהאתר עצמו */
-    $.ajax({ url: R.path, dataType: "text", cache: false })
-      .done(function (text) {
-        SHA = null;
-        parse(text);
-        setMsg("נקרא מהאתר ולא מה-API. השמירה תמשוך גרסה עדכנית לפני הקומיט.", "");
-      })
-      .fail(function () {
-        $("#out").html('<div class="pad">' + esc(why(xhr, "הקריאה")) + "</div>");
-        setMsg("שגיאה", "err");
-      });
-  });
-}
-
-/* ---------- שמירה: קומיט דרך ה-API ---------- */
-async function save() {
-  if (!getTok() && !(await askTok())) return;
-
-  var csv = toCsv();                       // איסוף הנתונים מהטבלה
-  $("#btnSave").prop("disabled", true);
-  setMsg("שומר…", "");
-
-  /* שלב 1 — מושכים sha עדכני, כדי לא לדרוס שינוי של מישהו אחר */
-  $.ajax({
-    url: apiUrl() + "?ref=" + R.branch,
-    method: "GET",
-    headers: authHeaders(),
-    cache: false
-  }).done(function (meta) {
-    if (SHA && meta.sha !== SHA && dec(meta.content) !== ORIG) {
-      setMsg("מישהו עדכן את הקובץ בינתיים. טען מחדש כדי לא לדרוס.", "err");
-      $("#btnSave").prop("disabled", false);
-      return;
+    const statusRaw=(r[C.status]||"").trim();
+    let status=statusRaw||"Active", term=false, reason="";
+    if(/^terminate/i.test(statusRaw)){
+      status="Terminate"; term=true;
+      const tail=statusRaw.replace(/^terminate/i,"").replace(/^[\s\-–—]+/,"").trim();
+      reason = !tail ? "Not replaced"
+        : /new vendor/i.test(tail) ? "Replaced by a new vendor"
+        : /cost (?:transition|move)/i.test(tail) ? "Cost moves to an existing vendor"
+        : tail;
     }
 
-    /* שלב 2 — PUT שמייצר קומיט ודוחף אותו לענף */
-    $.ajax({
-      url: apiUrl(),
-      method: "PUT",
-      headers: authHeaders(),
-      contentType: "application/json",
-      data: JSON.stringify({
-        message: "Update " + R.path,
-        content: enc(csv),
-        sha: meta.sha,
-        branch: R.branch
-      })
-    }).done(function (res) {
-      SHA = res.content.sha;
-      ORIG = csv;
-      $("#out input").removeClass("dirty");
-      check();
-      setMsg("נשמר. הדף הציבורי יתעדכן תוך כדקה.", "ok");
-    }).fail(function (xhr) {
-      if (xhr.status === 401) setTok("");
-      setMsg(why(xhr, "השמירה"), "err");
-      $("#btnSave").prop("disabled", false);
-    });
+    /* Rows priced as a share of AWS say so in the Applied Growth column;
+       the percentage itself sits in the note. */
+    let link=null, linkpct=null;
+    const appRaw=(r[C.appG]||"").trim();
+    if(/aws/i.test(appRaw) && num(appRaw)==null){
+      const mm=notes.match(/(\d+(?:\.\d+)?)\s*%\s*(?:from|of)\s+AWS/i);
+      if(mm){ link="AWS"; linkpct=Number(mm[1])/100; }
+    }
 
-  }).fail(function (xhr) {
-    if (xhr.status === 401) setTok("");
-    setMsg(why(xhr, "בדיקת הקובץ"), "err");
-    $("#btnSave").prop("disabled", false);
+    const hygiene=[];
+    const defG=pctOf(r[C.defG]), ovrG=pctOf(r[C.ovrG]);
+    const appG=link?null:pctOf(appRaw);
+    let override=null;
+    if(ovrG!=null) override=ovrG;
+    else if(appG!=null && defG!=null && Math.abs(appG-defG)>1e-9){
+      override=appG; hygiene.push("Applied growth typed over formula");
+    }
+
+    const bud26=num(r[C.bud26]), fc26=num(r[C.fc26]), b27=num(r[C.b27]);
+    const base = fc26!=null ? fc26 : (bud26||0);
+    let fixed=null;
+    if(!term && !link && base===0 && b27!=null && b27>0){
+      fixed=b27; hygiene.push("2027 value typed, not calculated");
+    }
+    if(!owner) hygiene.push("No system owner");
+    if(!deptRaw) hygiene.push("No department");
+
+    /* Replacement vendor, where the note names one. */
+    let repl="";
+    const rm = notes.match(/replac\w*\s+(?:with|by|to)\s+([^.;]+)/i)
+            || notes.match(/cost\s+move[sd]?\s+to\s+([^.;]+)/i);
+    if(rm) repl=rm[1].trim();
+
+    const mktRaw=(r[C.mkt]||"").trim();
+    const mkt = /marketplace|^y(es)?$/i.test(mktRaw) ? 1 : 0;
+
+    out.push({
+      row: gi+SHEET_OFFSET, gi, raw:r,
+      vendor: vendor || "—", tool, desc:(r[C.desc]||"").trim(),
+      model:(r[C.model]||"").trim() || "Unassigned",
+      cat, dept: deptRaw || "Unassigned", owner,
+      status, statusRaw, term, reason, repl,
+      driver, key: cat==="Security" ? "Security" : driver,
+      chan: mkt ? "AWS Marketplace" : "Direct",
+      bud26, fc26, override, mkt, notes, link, linkpct, fixed,
+      flags: FLAGGED_TOOLS.has(tool) ? ["Notes / Decision"] : [],
+      hygiene
+    });
   });
+  return out;
 }
 
-/* ---------- אתחול ---------- */
-$(function () {
-  $("#repo").text(R.owner + "/" + R.repo + " · " + R.path);
-  $("#btnSave").on("click", save);
-  $("#btnReload").on("click", load);
-  $("#btnTok").on("click", async function () { if (await askTok()) load(); });
-  load();
+/* Driver rates come straight out of the Default Growth % column — the most
+   common value for each driver wins, so one odd row cannot move the rate. */
+function buildDriverRates(rows,grid){
+  const tally={}, count={};
+  rows.forEach(v=>{
+    const d=pctOf(grid[v.gi][C.defG]);
+    count[v.key]=(count[v.key]||0)+1;
+    if(d==null) return;
+    (tally[v.key]||(tally[v.key]={}))[d]=(tally[v.key][d]||0)+1;
+  });
+  const rates={}, meta={};
+  Object.keys(count).sort().forEach(k=>{
+    const t=tally[k]||{};
+    const best=Object.entries(t).sort((a,b)=>b[1]-a[1])[0];
+    rates[k]=best?Number(best[0]):0;
+    meta[k]=[DRV_NOTES[k]||"Rate taken from the Default Growth % column.", count[k]];
+  });
+  return {rates,meta};
+}
+
+function buildIssues(){
+  const m=model(PRESETS.filed.s);
+  const fcTot=ROWS.reduce((a,v)=>a+(v.fc26!=null?v.fc26:(v.bud26||0)),0);
+  const budTot=ROWS.reduce((a,v)=>a+(v.bud26!=null?v.bud26:(v.fc26||0)),0);
+  const awsV = AWS_ROW!=null ? m.v[AWS_ROW] : 0;
+  const cluster = AWS_ROW!=null
+    ? [AWS_ROW,...ROWS.filter(v=>v.link).map(v=>v.row)].reduce((a,r)=>a+(m.v[r]||0),0) : 0;
+  const termRows=ROWS.filter(v=>v.term);
+  const find=t=>ROWS.find(v=>v.tool===t);
+  const mit=find("Mitiga"), acr=find("Acryl Data"), okta=ROWS.find(v=>/Okta Custom Software Package 2/.test(v.tool));
+  const noOwner=ROWS.filter(v=>!v.owner).length;
+  const noCat=ROWS.filter(v=>v.cat==="Unassigned");
+  const no25=ROWS.filter(v=>num(v.raw[C.a25])==null).length;
+  const noRenew=ROWS.filter(v=>!(v.raw[C.renew]||"").trim()).length;
+  const ovr=ROWS.filter(v=>v.override!=null);
+  const typed=ROWS.filter(v=>v.hygiene.indexOf("2027 value typed, not calculated")>=0);
+  const badStat=ROWS.filter(v=>["Active","Terminate","Planned"].indexOf(v.status)<0);
+
+  const L=[
+    ["A — DECISIONS NEEDED","AWS growth override",
+     `2027 AWS uses a ${pc(st.aws)} override instead of the ${pc(DRV_FILED["Data / Usage"]||0)} default in Assumptions. Do we stand behind it, and what is it based on — committed usage, migration plan or run-rate?`, awsV,"Open"],
+    ["A — DECISIONS NEEDED","AWS-linked spend concentration",
+     `${ROWS.filter(v=>v.link).map(v=>v.tool+" ("+pc(v.linkpct,0)+")").join(" and ")} are calculated off the AWS 2027 line by design. Combined, AWS and its dependants are the single biggest concentration in the plan — one assumption moves all of them.`, cluster,"Open"],
+    ["A — DECISIONS NEEDED","2026 overrun baked into 2027",
+     `2026 forecast runs ${pc(fcTot/budTot-1)} above budget. 2027 is built on the forecast, so the overrun becomes the new base. Do we rebase 2027 on budget instead, or accept the higher run-rate?`, fcTot-budTot,"Open"],
+    mit && ["A — DECISIONS NEEDED","Mitiga",
+     `Status is ${mit.statusRaw}, yet the 2026 forecast is ${money(mit.fc26||0)} against a ${money(mit.bud26||0)} budget — the largest single variance in the file. What drove it, and what does the replacement cost in 2027?`,
+     (mit.fc26||0)-(mit.bud26||0),"Open"],
+    ["A — DECISIONS NEEDED","Terminated vendors still funded",
+     `${termRows.length} vendors marked Terminate still carry spend in the 2026 forecast. What are the actual shut-off dates, and how much of this returns as 2027 savings?`,
+     termRows.reduce((a,v)=>a+(v.fc26!=null?v.fc26:(v.bud26||0)),0),"Open"],
+    ovr.length && ["A — DECISIONS NEEDED","Growth % used as a plug",
+     `${ovr.length} rows carry a hand-set growth rate — ${ovr.slice(0,3).map(v=>v.tool+" "+pc(v.override,1)).join(", ")} among them — several back-solved to hit a pre-agreed dollar target. Should these be presented as absolute commitments rather than growth rates?`,
+     ovr.reduce((a,v)=>a+(m.v[v.row]||0),0),"Open"],
+    acr && ["A — DECISIONS NEEDED","Acryl Data → Snowflake",
+     `Acryl Data is terminated with a ${money(acr.fc26||0)} 2026 forecast and no 2027 figure; the note says the cost moves to Snowflake. Is it already inside Snowflake's number, which is itself priced without AI cost?`,
+     acr.fc26||0,"Open"],
+    okta && ["A — DECISIONS NEEDED","Okta / Auth0 migration",
+     `The Auth0 line was folded into Okta Package 2 (${money(m.v[okta.row]||0)} in 2027) while Package 3 is terminated. Confirm the migration is counted once.`,
+     m.v[okta.row]||0,"Open"],
+    no25>0 && ["B — DATA GAPS","2025 Actual column is empty",
+     `${no25} of ${ROWS.length} rows are missing 2025 actuals, so the YoY 2025→2026 column is dead. Without it there is no historical trend and no way to test whether 2026 was over- or under-budgeted.`, null,"Open"],
+    noRenew>0 && ["B — DATA GAPS","No renewal calendar",
+     `Renewal Date is empty on ${noRenew} rows, along with Licensed Users and Price / User — the three fields that drive negotiation timing and per-seat benchmarking. Which vendors renew in the next two quarters?`, null,"Open"],
+    noOwner>0 && ["B — DATA GAPS","Ownership gaps",
+     `${noOwner} rows have no System Owner, ${ROWS.filter(v=>v.dept==="Unassigned").length} have no Department. Unowned spend cannot be challenged or renegotiated by anyone.`,
+     ROWS.filter(v=>!v.owner).reduce((a,v)=>a+(m.v[v.row]||0),0),"Open"],
+    noCat.length && ["B — DATA GAPS","Uncategorised spend",
+     `${noCat.map(v=>v.tool||v.vendor).join(", ")} have no Category, so their 2027 spend lands in Unassigned in the Summary and in the chart.`,
+     noCat.reduce((a,v)=>a+(m.v[v.row]||0),0),"Open"],
+    ["B — DATA GAPS","Benchmarks not calculable",
+     `Spend per employee and spend as a share of revenue cannot be computed from the workbook alone — headcount and revenue are not in it. Enter them in the assumptions panel to unlock both.`, null,"Open"],
+    ovr.length && ["C — MODEL HYGIENE","Applied Growth % overwritten",
+     `${ROWS.filter(v=>v.hygiene.indexOf("Applied growth typed over formula")>=0).length} rows have the Applied Growth formula replaced by a typed value. Any calculation over that column is exposed.`, null,"Open"],
+    typed.length && ["C — MODEL HYGIENE","Hardcoded 2027 values",
+     `${typed.length} 2027 cells are typed amounts rather than formulas (${typed.map(v=>v.tool||v.vendor).join(", ")}). They sit next to a growth % that had no base to work from.`, null,"Open"],
+    badStat.length && ["C — MODEL HYGIENE","Invalid status values",
+     `${badStat.map(v=>(v.tool||v.vendor)+" reads “"+v.statusRaw+"”").join("; ")} — outside Active / Terminate / Planned, so excluded from any status-based count.`, null,"Open"],
+    ["D — CLOSED THIS ROUND","AWS-linked lines — double counting",
+     `The rows priced as a share of AWS were reviewed and confirmed as intentional, not double counting. Documented here so the question is not reopened.`, null,"Confirmed"],
+    ["D — CLOSED THIS ROUND","Purchase channel",
+     `The marketplace flag now drives the channel split: ${ROWS.filter(v=>v.mkt).length} vendors buy through AWS Marketplace.`,
+     ROWS.filter(v=>v.mkt).reduce((a,v)=>a+(m.v[v.row]||0),0),"Fixed"]
+  ].filter(Boolean);
+
+  return L.map((x,i)=>({grp:x[0], n:i+1, topic:x[1], q:x[2], amt:x[3], status:x[4]}));
+}
+
+/* Rebuild every derived structure from the raw grid. */
+function rebuild(){
+  ROWS = buildRows(GRID);
+  const d = buildDriverRates(ROWS, GRID);
+  DRV_FILED = d.rates; DRV_META = d.meta;
+
+  const awsRow = ROWS.find(v=>/^amazon web services$/i.test(v.vendor)) || ROWS.find(v=>v.tool==="AWS");
+  AWS_ROW = awsRow ? awsRow.row : null;
+  const awsFiled = awsRow ? (awsRow.override!=null ? awsRow.override : (DRV_FILED[awsRow.key]||0)) : 0;
+
+  LINK_FILED = {};
+  ROWS.filter(v=>v.link).forEach(v=>LINK_FILED[v.row]=v.linkpct);
+
+  const disc={}; Object.keys(DRV_FILED).forEach(k=>disc[k]=DISCIPLINE[k]!=null?DISCIPLINE[k]:DRV_FILED[k]);
+  PRESETS={
+    filed:{label:"Plan as filed", s:{base:"fc",drv:{...DRV_FILED},aws:awsFiled,link:{...LINK_FILED},honor:true,term:1,newv:true}},
+    rebase:{label:"Rebased on 2026 budget", s:{base:"bud",drv:{...DRV_FILED},aws:awsFiled,link:{...LINK_FILED},honor:true,term:1,newv:true}},
+    discipline:{label:"Discipline case", s:{base:"fc",drv:disc,aws:Math.min(awsFiled,0.20),link:{...LINK_FILED},honor:false,term:1,newv:true}},
+    slip:{label:"Shut-offs slip", s:{base:"fc",drv:{...DRV_FILED},aws:awsFiled,link:{...LINK_FILED},honor:true,term:0.4,newv:true}}
+  };
+
+  /* Any scenario the user was mid-way through no longer maps to these rows. */
+  const p=PRESETS.filed.s;
+  Object.assign(st,{base:p.base,drv:{...p.drv},aws:p.aws,link:{...p.link},
+                    honor:p.honor,term:p.term,newv:p.newv});
+  st.vOvr={}; st.cuts=new Set(); st.preset="filed";
+  st.fCat=""; st.fStatus=""; st.fOwner=""; st.open=new Set(); st.pick=null;
+
+  FILED = model(PRESETS.filed.s).total;
+  ISSUES = buildIssues();
+}
+
+
+const st = {
+  base:"fc", drv:{...DRV_FILED}, aws:0, link:{...LINK_FILED},
+  honor:true, term:1, newv:true,
+  vOvr:{}, cuts:new Set(),
+  head:null, rev:null, target:null,
+  q:"", fCat:"", fStatus:"", fOwner:"", fFlag:false, fBig:false,
+  sortK:"v27", sortD:-1, open:new Set(), preset:"filed",
+  tab:"overview", dimA:"cat", dimB:"driver", meas:"v27", pivShare:false, pick:null, topN:5, fTop:0
+};
+
+/* ---------------- model ---------------- */
+const baseOf = (v,mode=st.base)=> mode==="fc"
+  ? (v.fc26!=null?v.fc26:(v.bud26||0))
+  : (v.bud26!=null?v.bud26:(v.fc26||0));
+const isNew = v => v.fixed!=null && baseOf(v)===0;
+
+const norm = s => ({vOvr:{}, cuts:new Set(), base:"fc", drv:{...DRV_FILED}, aws:st.aws,
+                    link:{...LINK_FILED}, honor:true, term:1, newv:true, ...s});
+function growthOf(v,s=st){
+  if(s.vOvr[v.row]!=null) return s.vOvr[v.row];
+  if(v.row===AWS_ROW) return s.aws;
+  if(s.honor && v.override!=null) return v.override;
+  const r = s.drv[v.key];
+  return r==null?0:r;
+}
+function model(s0=st){
+  const s=s0===st?st:norm(s0);
+  const aws = ROWS.find(v=>v.row===AWS_ROW);
+  const aws27 = s.cuts.has(AWS_ROW) ? 0 : baseOf(aws,s.base)*(1+growthOf(aws,s));
+  const out = {};
+  for(const v of ROWS){
+    let x;
+    if(s.cuts.has(v.row)) x = 0;
+    else if(v.link) x = (s.link[v.row]??v.linkpct)*aws27;
+    else if(v.term) x = baseOf(v,s.base)*(1-s.term);
+    else if(isNew(v)) x = s.newv ? v.fixed : 0;
+    else if(v.fixed!=null) x = v.fixed;
+    else x = baseOf(v,s.base)*(1+growthOf(v,s));
+    out[v.row]=x;
+  }
+  return {v:out, aws27, total:ROWS.reduce((a,v)=>a+out[v.row],0)};
+}
+function bridge(s0=st){
+  const s=s0===st?st:norm(s0);
+  const m = model(s);
+  const start = ROWS.reduce((a,v)=>a+baseOf(v,s.base),0);
+  const term  = -ROWS.filter(v=>v.term).reduce((a,v)=>a+baseOf(v,s.base),0)*s.term;
+  const nw    = ROWS.filter(isNew).reduce((a,v)=>a+m.v[v.row],0);
+  // Cuts are valued at their full knock-on impact, so rows priced off AWS follow AWS out.
+  const cuts  = s.cuts.size ? -(model({...s,cuts:new Set()}).total - m.total) : 0;
+  const grow  = m.total - start - term - nw - cuts;
+  return {start,term,grow,nw,cuts,end:m.total,
+          contBase:start+term, contGrowth:(start+term)>0?grow/(start+term):0};
+}
+/* FILED is recomputed by rebuild() each time the CSV changes. */
+
+/* ---------------- format ---------------- */
+const f0=n=>Math.round(n).toLocaleString("en-US");
+const f1=n=>n.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+const money=n=>Math.abs(n)>=1000?"$"+(n/1000).toFixed(2)+"M":"$"+f0(n)+"K";
+const pc=(n,d=1)=>(n*100).toFixed(d)+"%";
+const sgn=n=>(n>=0?"+":"−")+money(Math.abs(n));
+const sgnp=n=>(n>=0?"+":"−")+pc(Math.abs(n));
+
+/* ---------------- headline figures ---------------- */
+function renderFigs(){
+  const b=bridge(), m=model();
+  const fcTot=ROWS.reduce((a,v)=>a+baseOf(v,"fc"),0);
+  const budTot=ROWS.reduce((a,v)=>a+baseOf(v,"bud"),0);
+  const awsCluster=[AWS_ROW,...ROWS.filter(v=>v.link).map(v=>v.row)].reduce((a,r)=>a+m.v[r],0);
+  const sorted=[...ROWS].sort((a,c)=>m.v[c.row]-m.v[a.row]);
+  const top10=sorted.slice(0,10).reduce((a,v)=>a+m.v[v.row],0);
+  const top5=sorted.slice(0,5).reduce((a,v)=>a+m.v[v.row],0);
+  const cards=[
+    ["2027 plan", money(b.end), "num", `${sgnp(b.end/fcTot-1)} on the 2026 forecast · ${sgnp(b.end/budTot-1)} on the 2026 budget`],
+    ["AWS and everything priced off it", money(awsCluster), "num", `${pc(awsCluster/b.end)} of the plan. AWS, Datadog and the Amazon backup account move together`],
+    ["Top 5 / top 10 vendors", pc(top5/b.end)+" / "+pc(top10/b.end), "num", `${money(top5)} and ${money(top10)} of ${money(b.end)}. Where the negotiation leverage is`]
+  ];
+  if(st.target){
+    const gap=b.end-st.target;
+    cards.push(["Against the board cap", sgn(gap), gap>0?"num up":"num dn",
+      gap>0?`Over the ${money(st.target)} cap. ${pc(gap/b.end)} of the plan has to come out`:`Inside the ${money(st.target)} cap with room to spare`]);
+  }
+  if(st.head){
+    cards.push(["Tech spend per employee", "$"+f0(b.end*1000/st.head), "num",
+      `${f0(st.head)} employees · was $${f0(fcTot*1000/st.head)} on the 2026 forecast`]);
+  }
+  if(st.rev){
+    cards.push(["Share of revenue", pc(b.end/st.rev,2), "num", `On a ${money(st.rev)} revenue plan`]);
+  }
+  document.getElementById("figs").innerHTML=cards.map(([k,n,c,s])=>
+    `<div class="fig"><div class="k">${k}</div><div class="${c}">${n}</div><div class="s">${s}</div></div>`).join("");
+
+  document.getElementById("hTot").textContent=f0(b.end);
+  const d=b.end-FILED, p=document.getElementById("hVsFiled");
+  p.className="pill num "+(Math.abs(d)<0.5?"flat":(d>0?"up":"dn"));
+  p.textContent=Math.abs(d)<0.5?"as filed":sgn(d)+" vs plan as filed";
+
+  document.getElementById("bridgeSub").textContent =
+    `${money(b.start)} becomes ${money(b.end)} — a change of ${sgn(b.end-b.start)}, or ${sgnp(b.end/b.start-1)}. `+
+    `Starting from the 2026 ${st.base==="fc"?"forecast":"approved budget"}. `+
+    `Terminations take out ${money(-b.term)}, growth on what continues adds ${money(b.grow)}, `+
+    `new tools add ${money(b.nw)}${b.cuts<-0.5?`, and the vendors you cut remove ${money(-b.cuts)}`:""}.`;
+  document.getElementById("baseNote").textContent = st.base==="fc"
+    ? `The 2026 forecast runs ${pc(fcTot/budTot-1)} above the approved budget, so that overrun becomes the 2027 base.`
+    : `Rebasing strips the ${money(fcTot-budTot)} 2026 overrun out of the starting point.`;
+}
+
+/* ---------------- waterfall ---------------- */
+function renderBridge(){
+  const b=bridge();
+  let steps=[["2026 "+(st.base==="fc"?"forecast":"budget"),b.start,"total"],
+             ["Terminations",b.term,"d"],["Growth on continuing",b.grow,"u"],["New tools",b.nw,"u"]];
+  if(Math.abs(b.cuts)>0.5) steps.push(["Vendors you cut",b.cuts,"d"]);
+  steps.push(["2027 plan",b.end,"total"]);
+
+  const W=980,H=352,L=52,R=18,T=52,B=62;
+  const iw=W-L-R, ih=H-T-B, bw=Math.min(96,iw/steps.length-16), gap=(iw-bw*steps.length)/(steps.length-1);
+  let run=0; const pos=steps.map(s=>{
+    if(s[2]==="total") return {lo:0,hi:s[1],v:s[1],t:true,n:s[0],k:s[2]};
+    const lo=Math.min(run,run+s[1]), hi=Math.max(run,run+s[1]); const o={lo,hi,v:s[1],t:false,n:s[0],k:s[2]};
+    run+=s[1]; return o;
+  });
+  pos[0].hi=b.start; run=b.start;
+  let r2=b.start; pos.forEach((p,i)=>{ if(i===0||p.t) return; p.lo=Math.min(r2,r2+p.v); p.hi=Math.max(r2,r2+p.v); r2+=p.v; });
+  const max=Math.max(...pos.map(p=>p.hi))*1.1;
+  const y=v=>T+ih-(v/max)*ih;
+  const col={total:"#8FB4D6",u:"#E8AC97",d:"#9CCBB0"};
+  const txt={total:"#3D5E80",u:"#B05744",d:"#34815C"};
+  let s=`<line class="ax" x1="${L}" y1="${T+ih}" x2="${W-R}" y2="${T+ih}"/>`;
+  for(let i=1;i<=4;i++){const gv=max*i/4;s+=`<line class="gl" x1="${L}" y1="${y(gv)}" x2="${W-R}" y2="${y(gv)}"/><text class="lab" x="${L-8}" y="${y(gv)+4}" text-anchor="end">${f0(gv)}</text>`;}
+  pos.forEach((p,i)=>{
+    const x=L+i*(bw+gap), h=Math.max(2,y(p.lo)-y(p.hi));
+    s+=`<rect x="${x}" y="${y(p.hi)}" width="${bw}" height="${h}" fill="${col[p.k]}" rx="1"/>`;
+    s+=`<text class="valx" x="${x+bw/2}" y="${y(p.hi)-21}" text-anchor="middle" fill="${txt[p.k]}">${p.t?f0(p.v):(p.v>=0?"+":"−")+f0(Math.abs(p.v))}</text>`;
+    const pctTxt = i===0 ? "of 2026" : p.t ? sgnp(p.v/b.start-1) : sgnp(p.v/b.start);
+    s+=`<text class="pctx" x="${x+bw/2}" y="${y(p.hi)-7}" text-anchor="middle" fill="${i===0?"#94A5B3":txt[p.k]}">${i===0?"base":pctTxt}</text>`;
+    const words=p.n.split(" "); let ln=[],cur="";
+    words.forEach(w=>{ if((cur+" "+w).trim().length>13){ln.push(cur);cur=w;} else cur=(cur+" "+w).trim();});
+    ln.push(cur);
+    ln.forEach((t,j)=>{ s+=`<text class="lab" x="${x+bw/2}" y="${T+ih+18+j*13}" text-anchor="middle">${t}</text>`; });
+    if(i<pos.length-1){ const nx=L+(i+1)*(bw+gap); const yy=y(pos[i+1].t?pos[i+1].hi:(pos[i+1].v>=0?pos[i+1].lo:pos[i+1].hi));
+      s+=`<line class="conn" x1="${x+bw}" y1="${yy}" x2="${nx}" y2="${yy}"/>`; }
+  });
+  document.getElementById("bridge").innerHTML=s;
+}
+
+/* ---------------- tornado ---------------- */
+function renderTornado(){
+  const b0=model().total, tests=[];
+  const clone=()=>({...st, drv:{...st.drv}, link:{...st.link}, vOvr:{...st.vOvr}, cuts:new Set(st.cuts)});
+  Object.keys(DRV_FILED).forEach(k=>{
+    const hi=clone(); hi.drv[k]=st.drv[k]+0.10;
+    const lo=clone(); lo.drv[k]=Math.max(-1,st.drv[k]-0.10);
+    tests.push([k+" growth",model(hi).total-b0,b0-model(lo).total,"±10 pts"]);
+  });
+  const ah=clone(); ah.aws=st.aws+0.10; const al=clone(); al.aws=Math.max(-1,st.aws-0.10);
+  tests.push(["AWS growth rate",model(ah).total-b0,b0-model(al).total,"±10 pts, carries Datadog and Amazon with it"]);
+  const rb=clone(); rb.base=st.base==="fc"?"bud":"fc";
+  tests.push(["Rebase the starting point",Math.abs(model(rb).total-b0),0,st.base==="fc"?"switch to the 2026 budget":"switch to the 2026 forecast"]);
+  const sl=clone(); sl.term=st.term>0.5?0:1;
+  tests.push(["Termination shut-offs",Math.abs(model(sl).total-b0),0,st.term>0.5?"if none actually switch off":"if all switch off on time"]);
+  const ho=clone(); ho.honor=!st.honor;
+  tests.push(["Vendor-level overrides",Math.abs(model(ho).total-b0),0,st.honor?"drop them, use driver rates":"honour them again"]);
+  const nv=clone(); nv.newv=!st.newv;
+  tests.push(["New and planned tools",Math.abs(model(nv).total-b0),0,st.newv?"if they slip out of 2027":"if they land"]);
+
+  const rank=tests.map(t=>[t[0],Math.max(Math.abs(t[1]),Math.abs(t[2])),t[3]]).sort((a,c)=>c[1]-a[1]);
+  const max=Math.max(...rank.map(r=>r[1]))||1;
+  document.getElementById("tornado").innerHTML=rank.map(([n,v,note])=>
+    `<div class="torn"><span>${esc(n)}<br><span style="color:var(--muted2);font-size:10.5px">${esc(note)}</span></span>
+     <span class="tbar"><i style="width:${v/max*100}%"></i></span>
+     <span class="tv">${v<0.5?"—":"±"+money(v)}</span></div>`).join("");
+}
+
+/* ---------------- risk ---------------- */
+function renderRisk(){
+  const m=model();
+  const flagged=ROWS.filter(v=>v.flags.length);
+  const term=ROWS.filter(v=>v.term);
+  const noOwner=ROWS.filter(v=>!v.owner);
+  const hyg=ROWS.filter(v=>v.hygiene.length);
+  const badStat=ROWS.filter(v=>!["Active","Terminate","Planned"].includes(v.status));
+  const cards=[
+    ["d",flagged.length,"Rows carrying a dark-red flag",`${money(flagged.reduce((a,v)=>a+m.v[v.row],0))} of 2027 spend sits on rows someone already marked as questionable.`],
+    ["w",term.length,"Vendors marked Terminate",`${money(term.reduce((a,v)=>a+baseOf(v),0))} of 2026 spend is meant to stop. No shut-off dates are recorded.`],
+    ["w",noOwner.length,"Vendors with no named owner",`${money(noOwner.reduce((a,v)=>a+m.v[v.row],0))} that nobody is accountable for renegotiating.`],
+    ["w",hyg.length,"Rows with hardcoded or typed-over cells",`Growth rates and 2027 values typed over formulas. Any rate shown may not be what the total used.`],
+    ["d",ROWS.filter(v=>num(v.raw[C.a25])==null).length,"Rows with no 2025 actual",`No history to compare against, so there is no trend and no way to test whether 2026 was well budgeted.`],
+    ["d",ROWS.filter(v=>!(v.raw[C.renew]||"").trim()).length,"Rows with no renewal date",`Renewal date, licensed users and price per user drive negotiation timing and per-seat benchmarking.`]
+  ];
+  if(badStat.length) cards.push(["w",badStat.length,"Invalid status values",`${badStat.map(v=>esc(v.vendor)+" ("+esc(v.tool)+")").join(", ")} — excluded from any status-based count.`]);
+  document.getElementById("risks").innerHTML=cards.map(([c,n,t,d])=>
+    `<div class="risk ${c}"><div class="rn">${f0(n)}</div><div class="rt">${t}</div><div class="rd">${d}</div></div>`).join("");
+
+  let out="", grp="";
+  ISSUES.forEach(i=>{
+    if(i.grp!==grp){ grp=i.grp; out+=`<div class="grpline">${esc(grp)}</div>`; }
+    out+=`<div class="iss"><span class="in">${i.n}</span>
+      <span><b>${esc(i.topic)}</b><p>${esc(i.q)}</p></span>
+      <span class="im">${i.amt?money(i.amt):"—"}<small>${esc(i.status)}</small></span></div>`;
+  });
+  document.getElementById("issues").innerHTML=out;
+}
+
+/* ---------------- table ---------------- */
+const COLS=[
+  ["exp","",""],["vendor","Vendor / tool",""],["cat","Category",""],["status","Status",""],
+  ["owner","Owner",""],["bud26","2026 budget","r"],["fc26","2026 forecast","r"],
+  ["g","2027 growth","r"],["v27","2027 plan","r"],["dv","vs 2026 base","r"],["cut","Cut","r"]
+];
+const topRows=n=>new Set(topList(n).map(x=>x.v.row));
+function filtered(){
+  const m=model(), q=st.q.toLowerCase();
+  return ROWS.filter(v=>{
+    if(st.pick && DIMS[st.pick.d].f(v)!==st.pick.v) return false;
+    if(st.fCat && v.cat!==st.fCat) return false;
+    if(st.fStatus && v.statusRaw!==st.fStatus) return false;
+    if(st.fOwner && (v.owner||"—")!==st.fOwner) return false;
+    if(st.fFlag && !v.flags.length) return false;
+    if(st.fBig && m.v[v.row]<50) return false;
+    if(st.fTop && !topRows(st.fTop).has(v.row)) return false;
+    if(q && !(v.vendor+" "+v.tool+" "+v.owner+" "+v.notes+" "+v.cat+" "+v.desc).toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+function renderTable(){
+  const m=model();
+  document.getElementById("thr").innerHTML=COLS.map(([k,t,c])=>
+    `<th class="${c}" data-k="${k}">${t}${st.sortK===k?`<span class="ar"> ${st.sortD>0?"↑":"↓"}</span>`:""}</th>`).join("");
+  document.querySelectorAll("#thr th").forEach(th=>{ const k=th.dataset.k;
+    if(k==="exp"||k==="cut"){th.style.cursor="default";return;}
+    th.onclick=()=>{ if(st.sortK===k) st.sortD*=-1; else {st.sortK=k;st.sortD=(k==="vendor"||k==="cat"||k==="owner"||k==="status")?1:-1;} renderTable(); };
+  });
+  const key=v=>({vendor:v.vendor,cat:v.cat,status:v.status,owner:v.owner||"zz",
+    bud26:v.bud26||0,fc26:v.fc26||0,g:growthOf(v),v27:m.v[v.row],dv:m.v[v.row]-baseOf(v)})[st.sortK];
+  const list=filtered().sort((a,c)=>{const x=key(a),y=key(c);
+    return (typeof x==="string"?x.localeCompare(y):x-y)*st.sortD;});
+  const sum=list.reduce((a,v)=>a+m.v[v.row],0);
+  document.getElementById("tcount").textContent=`${list.length} of ${ROWS.length} vendors · ${money(sum)} · ${pc(sum/m.total)} of the plan`;
+
+  const pb=document.getElementById("pickBar");
+  if(st.pick){ pb.innerHTML=`<div class="pickbar on"><span>Carried over from the split — <b>${esc(DIMS[st.pick.d].l)}: ${esc(st.pick.v)}</b></span><button id="pickClear">Show all vendors</button></div>`;
+    document.getElementById("pickClear").onclick=()=>{st.pick=null;renderPivot();renderTable();};
+  } else pb.innerHTML="";
+  document.getElementById("tb").innerHTML=list.map(v=>{
+    const val=m.v[v.row], bs=baseOf(v), dv=val-bs, g=growthOf(v);
+    const cut=st.cuts.has(v.row), ov=st.vOvr[v.row]!=null;
+    const linked=!!v.link, fixed=v.fixed!=null&&!linked, term=v.term;
+    const gcell = linked ? `${pc(st.link[v.row]??v.linkpct,0)} of AWS`
+      : term ? "terminate"
+      : fixed ? "set amount"
+      : `<input class="gi${ov?" on":""}" type="number" step="1" value="${(g*100).toFixed(1).replace(/\.0$/,"")}" data-row="${v.row}" aria-label="2027 growth % for ${esc(v.vendor)}">%`;
+    let badges="";
+    if(term) badges+=`<span class="badge b-term">terminate</span>`;
+    if(v.status==="Planned") badges+=`<span class="badge b-plan">planned</span>`;
+    if(!["Active","Terminate","Planned"].includes(v.status)) badges+=`<span class="badge b-bad">status “${esc(v.status)}”</span>`;
+    if(term&&v.reason) badges+=`<span class="badge b-rsn">${esc(v.reason)}</span>`;
+    if(v.flags.length) badges+=`<span class="badge b-flag">flagged</span>`;
+    if(v.override!=null) badges+=`<span class="badge b-ovr">override ${pc(v.override,0)}</span>`;
+    if(v.mkt) badges+=`<span class="badge b-mkt">AWS marketplace</span>`;
+    const main=`<tr class="${cut?"cut":""}">
+      <td><button class="exp" data-x="${v.row}" aria-expanded="${st.open.has(v.row)}" aria-label="Details for ${esc(v.vendor)}">${st.open.has(v.row)?"−":"+"}</button></td>
+      <td><span class="vn">${esc(v.vendor)}</span><span class="vs">${esc(v.tool)}${v.driver?" · "+esc(v.driver):""}</span>${badges?`<div style="margin-top:4px">${badges}</div>`:""}</td>
+      <td>${esc(v.cat)}<span class="vs">${esc(v.model)}</span></td>
+      <td>${esc(v.status)}${v.term&&v.reason?`<span class="vs">${esc(v.reason)}</span>`:""}</td>
+      <td>${v.owner?esc(v.owner):`<span style="color:var(--up)">unowned</span>`}</td>
+      <td class="r">${v.bud26==null?"—":f1(v.bud26)}</td>
+      <td class="r">${v.fc26==null?"—":f1(v.fc26)}</td>
+      <td class="r">${gcell}</td>
+      <td class="r" style="font-weight:700">${f1(val)}</td>
+      <td class="r" style="color:${dv>0?"var(--up)":dv<0?"var(--down)":"var(--muted2)"}">${Math.abs(dv)<0.05?"—":(dv>0?"+":"−")+f1(Math.abs(dv))}</td>
+      <td class="r"><input class="cutbox" type="checkbox" data-cut="${v.row}" ${cut?"checked":""} aria-label="Cut ${esc(v.vendor)}"></td></tr>`;
+    if(!st.open.has(v.row)) return main;
+    const notes=[];
+    if(v.desc) notes.push(["What it is",esc(v.desc)]);
+    if(v.term) notes.push(["Why it is ending",esc(v.reason)+(v.repl?` — spend moves to ${esc(v.repl)}`:"")+` · workbook status reads “${esc(v.statusRaw)}”`]);
+    if(v.notes) notes.push(["Note in the workbook",esc(v.notes)]);
+    if(v.flags.length) notes.push(["Flagged columns",v.flags.map(esc).join(", ")]);
+    if(v.hygiene.length) notes.push(["Model hygiene",v.hygiene.map(esc).join(" · ")]);
+    const mathline = linked
+      ? `${pc(st.link[v.row]??v.linkpct,0)} × AWS 2027 ${f1(m.aws27)} = <b>${f1(val)}</b>`
+      : term ? `${f1(bs)} base × (1 − ${pc(st.term,0)} realised) = <b>${f1(val)}</b>${v.repl?` · spend moves to ${esc(v.repl)}`:""}`
+      : fixed ? `Fixed 2027 amount typed into the workbook = <b>${f1(val)}</b>`
+      : `${f1(bs)} base × (1 ${g>=0?"+":"−"} ${pc(Math.abs(g))}) = <b>${f1(val)}</b>`;
+    return main+`<tr class="det"><td></td><td colspan="10">
+      <div class="detgrid">
+        <div><b>Department</b>${esc(v.dept||"—")}</div>
+        <div><b>Cost driver</b>${esc(v.driver)}</div>
+        <div><b>Growth rule applied</b>${esc(v.cat==="Security"?"Security category rate":v.driver+" rate")}</div>
+        <div><b>Workbook row</b>Vendor Master, row ${v.row}</div>
+        ${notes.map(([k,t])=>`<div style="grid-column:1/-1"><b>${k}</b>${t}</div>`).join("")}
+      </div>
+      <div class="math">${mathline}</div></td></tr>`;
+  }).join("");
+
+  document.querySelectorAll(".exp").forEach(b=>b.onclick=()=>{
+    const r=+b.dataset.x; st.open.has(r)?st.open.delete(r):st.open.add(r); renderTable(); });
+  document.querySelectorAll(".gi").forEach(i=>i.onchange=()=>{
+    const r=+i.dataset.row, val=parseFloat(i.value);
+    if(isNaN(val)) delete st.vOvr[r]; else st.vOvr[r]=val/100;
+    st.preset=null; renderAll(); });
+  document.querySelectorAll(".cutbox").forEach(c=>c.onchange=()=>{
+    const r=+c.dataset.cut; c.checked?st.cuts.add(r):st.cuts.delete(r); st.preset=null; renderAll(); });
+}
+
+/* ---------------- tray ---------------- */
+function renderTray(){
+  const t=document.getElementById("tray");
+  const nOvr=Object.keys(st.vOvr).length;
+  if(!st.cuts.size && !nOvr){ t.classList.remove("on"); return; }
+  t.classList.add("on");
+  const m=model(), filedM=model(PRESETS.filed.s);
+  const saved=st.cuts.size ? [...st.cuts].reduce((a,r)=>a+filedM.v[r],0) : 0;
+  document.getElementById("trayN").textContent=st.cuts.size?money(saved):money(Math.abs(m.total-FILED));
+  const names=[...st.cuts].map(r=>ROWS.find(v=>v.row===r).vendor);
+  const nameList=names.map(esc).join(", ").replace(/\.$/,"");
+  document.getElementById("trayL").innerHTML=
+    (st.cuts.size?`removed from the plan by cutting <b>${names.length}</b> vendor${names.length>1?"s":""} — ${nameList}. `:"")+
+    (nOvr?`${nOvr} vendor growth rate${nOvr>1?"s":""} overridden by hand.`:"");
+}
+
+/* ---------------- rail ---------------- */
+function slider(id,label,val,note,min,max,step,filed,unit){
+  const p=+(val*100).toFixed(2), fp=+(filed*100).toFixed(2), edited=Math.abs(p-fp)>0.001;
+  return `<div class="sl">
+    <div class="sl-t"><label for="${id}n">${label}</label>
+      <span class="spin">
+        <button type="button" data-nudge="-1" data-for="${id}" aria-label="decrease">−</button>
+        <input id="${id}n" class="spinv${edited?" edited":""}" type="number" value="${p}" min="${min*100}" max="${max*100}" step="0.1" inputmode="decimal">
+        <span class="pct">%</span>
+        <button type="button" data-nudge="1" data-for="${id}" aria-label="increase">+</button>
+      </span></div>
+    <input type="range" id="${id}" min="${min*100}" max="${max*100}" step="${step*100}" value="${p}">
+    <div class="sl-scale"><span>${min*100}</span><span class="filed" title="as filed">filed ${fp}%</span><span>${max*100}</span></div>
+    <div class="sl-sub">${note}</div></div>`;
+}
+// binds a slider + its number box + nudge buttons to one setter, in percentage points
+function bindSlider(id,set,stepPct){
+  const r=document.getElementById(id), n=document.getElementById(id+"n");
+  const apply=v=>{ const min=+r.min,max=+r.max; v=Math.min(max,Math.max(min,v));
+    v=Math.round(v*100)/100; r.value=v; n.value=v; set(v/100); };
+  r.oninput=()=>apply(+r.value);
+  n.oninput=()=>{ if(n.value==="") return; apply(+n.value); };
+  n.onblur=()=>{ if(n.value==="") { n.value=r.value; } };
+  document.querySelectorAll(`[data-nudge][data-for="${id}"]`).forEach(b=>
+    b.onclick=()=>apply((n.value===""?+r.value:+n.value) + (+b.dataset.nudge)*(stepPct||0.5)));
+}
+function renderRail(){
+  document.getElementById("presets").innerHTML=Object.entries(PRESETS).map(([k,p])=>
+    `<button data-p="${k}" aria-pressed="${st.preset===k}">${p.label}</button>`).join("");
+  document.querySelectorAll("#presets button").forEach(b=>b.onclick=()=>{
+    const p=PRESETS[b.dataset.p].s;
+    Object.assign(st,{base:p.base,drv:{...p.drv},aws:p.aws,link:{...p.link},honor:p.honor,term:p.term,newv:p.newv});
+    st.vOvr={}; st.cuts=new Set(); st.preset=b.dataset.p; renderAll();
+  });
+  document.querySelectorAll("#segBase button").forEach(b=>{
+    b.setAttribute("aria-pressed",st.base===b.dataset.b);
+    b.onclick=()=>{ st.base=b.dataset.b; st.preset=null; renderAll(); };
+  });
+  document.getElementById("drvSliders").innerHTML=Object.keys(DRV_FILED).map(k=>{
+    const [note,n]=DRV_META[k];
+    return slider("d_"+btoa(k).replace(/=/g,""),`${k} <span style="color:var(--muted2)">· ${n}</span>`,st.drv[k],note,-0.25,0.75,0.005,DRV_FILED[k]);
+  }).join("");
+  Object.keys(DRV_FILED).forEach(k=>bindSlider("d_"+btoa(k).replace(/=/g,""),
+    v=>{ st.drv[k]=v; st.preset=null; renderAll(); },0.5));
+  const linked=ROWS.filter(v=>v.link&&v.row!==AWS_ROW);
+  const awsFiled=PRESETS.filed.s.aws, dflt=DRV_FILED[(ROWS.find(v=>v.row===AWS_ROW)||{}).key]||0;
+  let railHtml="";
+  if(AWS_ROW!=null){
+    railHtml+=slider("a_aws","AWS growth rate",st.aws,
+      `The workbook uses ${pc(awsFiled)} against a ${pc(dflt)} default for its cost driver.`
+      +(linked.length?` This single number also drives the ${linked.length===1?"row":linked.length+" rows"} below.`:""),
+      -0.25,1.0,0.005,awsFiled);
+  } else {
+    railHtml+=`<div class="sl-sub">No AWS row in this data, so there is no cluster to model.</div>`;
+  }
+  linked.forEach((v,i)=>{ railHtml+=slider("a_l"+i,esc(v.tool||v.vendor)+" as a share of AWS",
+    st.link[v.row]??v.linkpct,"Budgeted as a percentage of the AWS 2027 line, not on its own usage.",
+    0,0.6,0.005,LINK_FILED[v.row]); });
+  document.getElementById("awsSliders").innerHTML=railHtml;
+  if(AWS_ROW!=null) bindSlider("a_aws",v=>{st.aws=v;st.preset=null;renderAll();},0.5);
+  linked.forEach((v,i)=>bindSlider("a_l"+i,x=>{st.link[v.row]=x;st.preset=null;renderAll();},0.5));
+
+
+  document.getElementById("decisions").innerHTML=
+    slider("t_term","Terminations that actually switch off",st.term,`${ROWS.filter(v=>v.term).length} vendors are marked Terminate with no shut-off dates. Drag down to model spend carrying into 2027.`,0,1,0.01,1)
+   +`<label class="chk"><input type="checkbox" id="c_honor" ${st.honor?"checked":""}>
+      <span>Honour vendor-level overrides<small>${ROWS.filter(v=>v.override!=null).length} rows carry a hand-set rate instead of their driver rate. Untick to force the driver rates instead.</small></span></label>
+     <label class="chk"><input type="checkbox" id="c_new" ${st.newv?"checked":""}>
+      <span>Fund the new and planned tools<small>${ROWS.filter(isNew).length} rows have no 2026 spend and a typed 2027 amount, ${money(ROWS.filter(isNew).reduce((a,v)=>a+(v.fixed||0),0))} together.</small></span></label>`;
+  bindSlider("t_term",v=>{st.term=v;st.preset=null;renderAll();},1);
+  document.getElementById("c_honor").onchange=e=>{st.honor=e.target.checked;st.preset=null;renderAll();};
+  document.getElementById("c_new").onchange=e=>{st.newv=e.target.checked;st.preset=null;renderAll();};
+}
+
+
+/* ---------------- dimensions ---------------- */
+const DIMS={
+  cat:{l:"Category",f:v=>v.cat},
+  driver:{l:"Cost driver",f:v=>v.driver},
+  model:{l:"Service model",f:v=>v.model},
+  dept:{l:"Department",f:v=>v.dept},
+  status:{l:"Status",f:v=>v.status},
+  reason:{l:"Why it is ending",f:v=>v.term?v.reason:"Continuing"},
+  owner:{l:"System owner",f:v=>v.owner||"Unowned"},
+  chan:{l:"Purchase channel",f:v=>v.chan},
+  band:{l:"Growth band",f:v=>bandOf(v)}
+};
+const BANDS=[["Coming out","#9CCBB0"],["Flat, up to 5%","#C9DCEC"],["5 to 15%","#A6C4DF"],
+             ["15 to 30%","#EBCB8B"],["Above 30%","#E8AC97"],["New in 2027","#BFAEDB"]];
+function bandOf(v){
+  const m=model(), val=m.v[v.row], bs=baseOf(v);
+  if(bs===0) return val>0?"New in 2027":"Coming out";
+  const g=val/bs-1;
+  if(val===0||g<=-0.999) return "Coming out";
+  if(g<0.05) return "Flat, up to 5%";
+  if(g<0.15) return "5 to 15%";
+  if(g<0.30) return "15 to 30%";
+  return "Above 30%";
+}
+const PAL=["#8FB4D6","#E8AC97","#9CCBB0","#EBCB8B","#BFAEDB","#8FC8C4","#DFC9A8","#B4C2CE",
+           "#C9DCEC","#F0D0C0","#C7DFCE","#D8CBE8"];
+const BASEL=()=>st.base==="fc"?"2026 forecast":"2026 budget";
+const measOf=(v,m)=>({v27:m.v[v.row], base:baseOf(v), chg:m.v[v.row]-baseOf(v)}[st.meas]);
+
+function pivot(){
+  const m=model(), A=DIMS[st.dimA].f, B=st.dimB?DIMS[st.dimB].f:null;
+  const rowsA={}, colsB={};
+  ROWS.forEach(v=>{
+    const a=A(v), b=B?B(v):"Total", x=measOf(v,m);
+    const R=rowsA[a]||(rowsA[a]={t:0,n:0,base:0,plan:0,c:{}});
+    R.t+=x; R.n++; R.base+=baseOf(v); R.plan+=m.v[v.row];
+    R.c[b]=(R.c[b]||0)+x;
+    colsB[b]=(colsB[b]||0)+x;
+  });
+  const order=Object.entries(rowsA).sort((p,q)=>Math.abs(q[1].t)-Math.abs(p[1].t));
+  const cols=Object.entries(colsB).sort((p,q)=>Math.abs(q[1])-Math.abs(p[1])).map(e=>e[0]);
+  const colour={}; 
+  if(st.dimB==="band"){ BANDS.forEach(([n,c])=>colour[n]=c); }
+  cols.forEach((c,i)=>{ if(!colour[c]) colour[c]=PAL[i%PAL.length]; });
+  return {order,cols,colour,total:order.reduce((a,e)=>a+e[1].t,0),m};
+}
+
+function renderPivot(){
+  const p=pivot(), lbl={v27:"2027 plan",base:"2026 base",chg:"change vs 2026 base"}[st.meas];
+  document.getElementById("pivCount").textContent =
+    `${p.order.length} ${DIMS[st.dimA].l.toLowerCase()} group${p.order.length>1?"s":""} · ${lbl} ${money(p.total)}`;
+  const ref = (st.meas==="v27"&&!st.pivShare)
+    ? `<span><i style="background:var(--accent-pale)"></i>${BASEL()}</span>` : "";
+  document.getElementById("pivLegend").innerHTML = ref + (st.dimB
+    ? p.cols.map(c=>`<span><i style="background:${p.colour[c]}"></i>${esc(c)}${st.meas==="v27"?" (2027)":""}</span>`).join("")
+    : `<span><i style="background:var(--fill-blue)"></i>${lbl}</span>`);
+
+  const scale=Math.max(...p.order.map(([,r])=>Math.max(Math.abs(r.t),st.meas==="v27"?r.base:0)))||1;
+  document.getElementById("pivBars").innerHTML=p.order.map(([a,r])=>{
+    const w=st.pivShare?100:Math.abs(r.t)/scale*100;
+    const denom=st.pivShare?Object.values(r.c).reduce((x,y)=>x+Math.abs(y),0):Math.abs(r.t);
+    const segs=(st.dimB?p.cols:["Total"]).filter(c=>r.c[c]).map(c=>{
+      const sw=denom?Math.abs(r.c[c])/denom*100:0;
+      return `<i style="width:${sw}%;background:${st.dimB?p.colour[c]:"var(--fill-blue)"}" title="${esc(c)}: ${money(r.c[c])}"></i>`;}).join("");
+    const gap=r.plan-r.base, d=r.base>0?r.plan/r.base-1:null;
+    const on=st.pick&&st.pick.d===st.dimA&&st.pick.v===a?" on":"";
+    const bars = st.meas==="v27" && !st.pivShare
+      ? `<span class="bars2"><span class="b26" style="width:${r.base/scale*100}%" title="${BASEL()} ${money(r.base)}"></span>
+           <span class="stack" style="width:${w}%">${segs}</span></span>`
+      : `<span class="stack" style="width:${w}%">${segs}</span>`;
+    return `<button class="pivrow${on}" data-a="${esc(a)}">
+      <span class="pn">${esc(a)}<small>${r.n} vendor${r.n>1?"s":""} · ${pc(Math.abs(r.t)/Math.abs(p.total||1))} of the ${st.meas==="chg"?"movement":"total"}</small></span>
+      ${bars}
+      <span class="pv" ${st.meas==="chg"?`style="color:${r.t>0?"var(--up)":r.t<0?"var(--down)":"var(--muted2)"}"`:""}>${st.meas==="chg"?sgn(r.t):money(r.t)}</span>
+      <span class="pg" style="color:${gap>0?"var(--up)":gap<0?"var(--down)":"var(--muted2)"}">${Math.abs(gap)<0.05?"—":sgn(gap)}<small>${d==null?"new":sgnp(d)}</small></span>
+    </button>`;}).join("");
+  document.querySelectorAll(".pivrow").forEach(b=>b.onclick=()=>pick(st.dimA,b.dataset.a));
+
+  // matrix
+  const cols=st.dimB?p.cols:[];
+  const showT=st.meas!=="v27";
+  const cell=x=>x?`<td class="d">${st.meas==="chg"?sgn(x):f1(x)}</td>`:`<td class="d z">—</td>`;
+  let head=`<tr><th>${esc(DIMS[st.dimA].l)}</th>`+cols.map(c=>`<th class="rot">${esc(c)}</th>`).join("")
+    +(showT?`<th class="rot">${st.meas==="chg"?"Net change":"2026 base"}</th>`:"")+`<th class="rot brk">${BASEL()}</th>`
+    +`<th class="rot">2027 budget</th><th class="rot">Gap $</th><th class="rot">Change %</th><th class="rot">% of plan</th></tr>`;
+  let body=p.order.map(([a,r])=>{
+    const on=st.pick&&st.pick.d===st.dimA&&st.pick.v===a?" on":"";
+    return `<tr class="pick${on}" data-a="${esc(a)}"><td>${esc(a)}<span class="vs">${r.n} vendor${r.n>1?"s":""}</span></td>`
+      +cols.map(c=>cell(r.c[c])).join("")
+      +(showT?`<td class="d" style="font-weight:700">${st.meas==="chg"?sgn(r.t):f1(r.t)}</td>`:"")
+      +`<td class="d brk">${f1(r.base)}</td><td class="d" style="font-weight:700">${f1(r.plan)}</td>`
+      +`<td class="d" style="color:${r.plan-r.base>0.05?"var(--up)":r.plan-r.base<-0.05?"var(--down)":"var(--muted2)"}">${Math.abs(r.plan-r.base)<0.05?"—":(r.plan-r.base>0?"+":"−")+f1(Math.abs(r.plan-r.base))}</td>`
+      +`<td class="d" style="color:${r.base>0&&r.plan/r.base-1>0?"var(--up)":"var(--down)"}">${r.base>0?sgnp(r.plan/r.base-1):"new"}</td>`
+      +`<td class="d">${pc(r.plan/p.m.total)}</td></tr>`;}).join("");
+  const colT=cols.map(c=>p.order.reduce((a,[,r])=>a+(r.c[c]||0),0));
+  const baseT=p.order.reduce((a,[,r])=>a+r.base,0), planT=p.m.total;
+  body+=`<tr class="tot"><td>All ${ROWS.length} vendors</td>`+colT.map(cell).join("")
+    +(showT?`<td class="d">${st.meas==="chg"?sgn(p.total):f1(p.total)}</td>`:"")
+    +`<td class="d brk">${f1(baseT)}</td><td class="d">${f1(planT)}</td>`
+    +`<td class="d" style="color:var(--up)">+${f1(planT-baseT)}</td>`
+    +`<td class="d" style="color:var(--up)">${sgnp(planT/baseT-1)}</td><td class="d">100.0%</td></tr>`;
+  document.getElementById("matrix").innerHTML=`<div class="mat"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>`;
+  document.querySelectorAll(".mat tr.pick").forEach(t=>t.onclick=()=>pick(st.dimA,t.dataset.a));
+  document.getElementById("matTitle").textContent=
+    st.dimB?`${DIMS[st.dimA].l} against ${DIMS[st.dimB].l.toLowerCase()}`:`${DIMS[st.dimA].l}`;
+
+  // growth bands
+  const m=model(), bag={};
+  ROWS.forEach(v=>{const k=bandOf(v);(bag[k]||(bag[k]={n:0,$:0})).n++;bag[k].$+=m.v[v.row];});
+  const bmax=Math.max(...Object.values(bag).map(x=>x.$))||1;
+  document.getElementById("bands").innerHTML=BANDS.filter(([n])=>bag[n]).map(([n,c])=>
+    `<div class="bandrow"><span>${n}</span><span class="bb"><i style="width:${bag[n].$/bmax*100}%;background:${c}"></i></span>
+     <span class="bv">${money(bag[n].$)}</span><span class="bc">${bag[n].n} vendor${bag[n].n>1?"s":""}</span></div>`).join("");
+}
+function pick(d,v){
+  st.pick = (st.pick&&st.pick.d===d&&st.pick.v===v) ? null : {d,v};
+  renderPivot(); renderTable();
+  if(st.pick) go("vendors");
+}
+
+/* ---------------- top vendors ---------------- */
+function topList(n){
+  const m=model();
+  return [...ROWS].sort((a,b)=>m.v[b.row]-m.v[a.row]).slice(0,n).map(v=>({v,val:m.v[v.row],base:baseOf(v)}));
+}
+function renderTopV(){
+  const m=model(), n=st.topN, list=topList(n);
+  const scale=Math.max(...list.map(x=>Math.max(x.val,x.base)))||1;
+  let cum=0;
+  document.getElementById("concBase").textContent=BASEL();
+  const rowsHtml=list.map((x,i)=>{
+    cum+=x.val; const gap=x.val-x.base, d=x.base>0?x.val/x.base-1:null;
+    return `<button class="tvrow" data-row="${x.v.row}">
+      <span class="tvr">${i+1}</span>
+      <span class="tvn">${esc(x.v.vendor)}<small>${esc(x.v.tool||x.v.cat)} · ${esc(x.v.cat)}</small></span>
+      <span class="bars2"><span class="b26" style="width:${x.base/scale*100}%" title="${BASEL()} ${money(x.base)}"></span>
+        <span class="stack" style="width:${x.val/scale*100}%"><i style="width:100%;background:var(--fill-blue)"></i></span></span>
+      <span class="tvv">${money(x.val)}</span>
+      <span class="tvg" style="color:${gap>0.05?"var(--up)":gap<-0.05?"var(--down)":"var(--muted2)"}">${Math.abs(gap)<0.05?"—":sgn(gap)}<small>${d==null?"new":sgnp(d)}</small></span>
+      <span class="tvc">${pc(cum/m.total)}<br><span style="font-size:9.5px;opacity:.75">cum.</span></span>
+    </button>`;}).join("");
+  const s=k=>topList(k).reduce((a,x)=>a+x.val,0);
+  const t5=s(5),t10=s(10),t20=s(20), b5=topList(5).reduce((a,x)=>a+x.base,0);
+  const foot=`<div class="concfoot">
+    The five largest vendors carry <b>${money(t5)}</b> of the <b>${money(m.total)}</b> plan — up from <b>${money(b5)}</b> on the ${BASEL()},
+    a move of <b style="color:${t5-b5>0?"var(--up)":"var(--down)"}">${sgn(t5-b5)}</b>.
+    The remaining <b>${ROWS.length-10}</b> vendors below the top 10 account for <b>${money(m.total-t10)}</b>, or ${pc(1-t10/m.total)} of the plan.
+    Select any row to open that vendor in the vendor list.</div>`;
+  document.getElementById("topv").innerHTML=rowsHtml+foot;
+  document.querySelectorAll(".tvrow").forEach(b=>b.onclick=()=>{
+    const r=+b.dataset.row, v=ROWS.find(x=>x.row===r);
+    st.pick=null; st.fTop=0; st.q=v.vendor;
+    const q=document.getElementById("q"); if(q) q.value=st.q;
+    const ft=document.getElementById("fTop"); if(ft){ft.setAttribute("aria-pressed","false");ft.textContent="Top 5 only";}
+    st.open=new Set([r]); renderTable(); go("vendors");
+  });
+  document.getElementById("concSub").textContent=
+    `Top 5 vendors are ${pc(t5/m.total)} of the 2027 plan, top 10 are ${pc(t10/m.total)}, top 20 are ${pc(t20/m.total)}. Ranked on the current assumptions.`;
+}
+
+/* ---------------- termination reality check ---------------- */
+function renderTermCheck(){
+  const m=model(), t=ROWS.filter(v=>v.term);
+  const grp={};
+  t.forEach(v=>{const k=v.reason||"Not replaced";(grp[k]||(grp[k]={$:0,n:0,names:[]})).$+=baseOf(v);grp[k].n++;grp[k].names.push(v.vendor);});
+  const gross=t.reduce((a,v)=>a+baseOf(v),0)*st.term;
+  const max=Math.max(...Object.values(grp).map(x=>x.$))||1;
+  const col={"Not replaced":"#9CCBB0","Replaced by a new vendor":"#EBCB8B","Cost moves to an existing vendor":"#A6C4DF"};
+  const repl=ROWS.filter(v=>["incident.io","DX"].includes(v.vendor));
+  const replCost=repl.reduce((a,v)=>a+m.v[v.row],0);
+  const order=Object.entries(grp).sort((a,b)=>b[1].$-a[1].$);
+  let html=order.map(([k,g])=>`<div class="tc">
+      <span class="tcn">${esc(k)}<small>${g.n} vendor${g.n>1?"s":""} — ${g.names.map(esc).join(", ")}</small></span>
+      <span class="tcb"><i style="width:${g.$/max*100}%;background:${col[k]||"#B4C2CE"}"></i></span>
+      <span class="tcv">${money(g.$*st.term)}</span></div>`).join("");
+  const clean=(grp["Not replaced"]||{$:0}).$*st.term;
+  html+=`<div class="tcnet">Gross spend switched off: <b>${money(gross)}</b>.
+    Of that, <b>${money(gross-clean)}</b> is handed to something else — OpsGenie to incident.io, LinearB to DX,
+    and Acryl Data folded into Snowflake, which is itself growing ${pc(growthOf(ROWS.find(v=>v.vendor==="Snowflake Inc.")))}.
+    The two named replacements cost <b>${money(replCost)}</b> in 2027, so those swaps run
+    <b style="color:${replCost-(gross-clean-60*st.term)>0?"var(--up)":"var(--down)"}">${sgn(replCost-(gross-clean-60*st.term))}</b> against what they replace.
+    Clean exits with nothing behind them: <b>${money(clean)}</b>.<br>
+    <span style="color:var(--muted)">Worth knowing: the workbook's own bridge matches the text “Terminate” exactly, so the three
+    rows now labelled with a reason fall out of its terminations line and into growth. This page counts all
+    ${t.length} of them as terminations, which is why its split differs from the Executive View tab.</span></div>`;
+  document.getElementById("termCheck").innerHTML=html;
+}
+
+/* ---------------- tabs ---------------- */
+const TABS=[["overview","Summary"],["vendors","Vendors"],["risks","What could go wrong"]];
+function go(t){
+  st.tab=t;
+  document.querySelectorAll(".pane").forEach(p=>p.hidden = p.dataset.pane!==t);
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderTabs(){
+  const nFlag=ROWS.filter(v=>v.flags.length).length;
+  document.getElementById("tabs").innerHTML=TABS.map(([k,l])=>
+    `<button data-t="${k}" role="tab" aria-selected="${st.tab===k}">${l}${
+      k==="vendors"?`<span class="cnt">${ROWS.length}</span>`:k==="risks"?`<span class="cnt">${nFlag+ISSUES.filter(i=>i.status==="Open").length}</span>`:""}</button>`).join("");
+  document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>go(b.dataset.t));
+}
+function pivotCsv(){
+  const p=pivot(), cols=st.dimB?p.cols:["Total"];
+  const q=s=>`"${String(s==null?"":s).replace(/"/g,'""')}"`;
+  const head=[DIMS[st.dimA].l,"Vendors",...cols,"Measure total",BASEL(),"2027 budget","Gap $","Change %","% of plan"];
+  const body=p.order.map(([a,r])=>[a,r.n,...cols.map(c=>(r.c[c]||0).toFixed(3)),
+    r.t.toFixed(3),r.base.toFixed(3),r.plan.toFixed(3),(r.plan-r.base).toFixed(3),
+    r.base>0?((r.plan/r.base-1)*100).toFixed(2)+"%":"new",
+    (r.plan/p.m.total*100).toFixed(2)+"%"].map(q).join(","));
+  const blob=new Blob(["\uFEFF"+[head.map(q).join(","),...body].join("\r\n")],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=`tech-budget-2027-by-${st.dimA}${st.dimB?"-and-"+st.dimB:""}.csv`;a.click();URL.revokeObjectURL(a.href);
+}
+
+/* ---------------- misc ---------------- */
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function fillSelects(){
+  const mk=(el,vals,all)=>{ el.innerHTML=`<option value="">${all}</option>`+vals.map(v=>`<option>${esc(v)}</option>`).join(""); };
+  mk(document.getElementById("fCat"),[...new Set(ROWS.map(v=>v.cat))].sort(),"All categories");
+  mk(document.getElementById("fStatus"),[...new Set(ROWS.map(v=>v.statusRaw))].sort(),"All statuses");
+  mk(document.getElementById("fOwner"),[...new Set(ROWS.map(v=>v.owner||"—"))].sort(),"All owners");
+}
+function renderFoot(){
+  const b=bridge();
+  document.getElementById("foot").innerHTML=
+  `<b>How to read this.</b> Every number recalculates from the vendor rows, exactly as the workbook does:
+   2027 = the 2026 base × (1 + growth), except where a row is a share of the AWS line, marked Terminate, or carries a typed 2027 amount.
+   With the panel reset, the total reproduces the workbook to the cent (${f1(FILED)} in $000).<br>
+   <b>Base is ${st.base==="fc"?"the 2026 forecast":"the 2026 approved budget"}.</b>
+   Terminations ${money(-b.term)} · growth ${money(b.grow)} · new tools ${money(b.nw)} · plan ${money(b.end)}.<br>
+   Source: <b>${esc(SOURCE)}</b>, ${ROWS.length} vendor rows. Edits made in the raw table on the Vendors tab are written straight back to the CSV in the repository.`;
+}
+function csv(){
+  const m=model();
+  const head=["Vendor","Tool","Category","Service model","Department","Owner","Status","Cost driver",
+    "Termination reason","Replaced by","Purchase channel",
+    "2026 budget","2026 forecast","2026 base used","2027 growth applied","2027 plan","Change vs base","Flagged","AWS marketplace","Cut","Notes"];
+  const q=s=>`"${String(s==null?"":s).replace(/"/g,'""')}"`;
+  const body=filtered().map(v=>[v.vendor,v.tool,v.cat,v.model,v.dept,v.owner,v.statusRaw,v.driver,
+    v.reason,v.repl,v.chan,v.bud26,v.fc26,baseOf(v),
+    v.link?`${((st.link[v.row]??v.linkpct)*100).toFixed(0)}% of AWS`:v.status==="Terminate"?"terminate":v.fixed!=null?"set amount":(growthOf(v)*100).toFixed(2)+"%",
+    m.v[v.row].toFixed(3),(m.v[v.row]-baseOf(v)).toFixed(3),
+    v.flags.length?"yes":"",v.mkt?"yes":"",st.cuts.has(v.row)?"yes":"",v.notes].map(q).join(","));
+  const blob=new Blob(["\uFEFF"+[head.map(q).join(","),...body].join("\r\n")],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="tech-budget-2027-scenario.csv"; a.click(); URL.revokeObjectURL(a.href);
+}
+function reset(){
+  const p=PRESETS.filed.s;
+  Object.assign(st,{base:p.base,drv:{...p.drv},aws:p.aws,link:{...p.link},honor:p.honor,term:p.term,newv:p.newv});
+  st.vOvr={}; st.cuts=new Set(); st.preset="filed"; renderAll();
+}
+function renderAll(){ renderRail(); renderFigs(); renderBridge(); renderTopV(); renderTermCheck(); renderTornado(); renderPivot(); renderRisk(); renderTable(); renderTray(); renderFoot(); }
+
+document.getElementById("btnReset").onclick=reset;
+document.getElementById("btnReset2").onclick=reset;
+document.getElementById("trayClear").onclick=()=>{st.cuts=new Set();st.vOvr={};renderAll();};
+document.getElementById("btnCsv").onclick=csv;
+document.getElementById("q").oninput=e=>{st.q=e.target.value;renderTable();};
+document.getElementById("fCat").onchange=e=>{st.fCat=e.target.value;renderCats();renderTable();};
+document.getElementById("fStatus").onchange=e=>{st.fStatus=e.target.value;renderTable();};
+document.getElementById("fOwner").onchange=e=>{st.fOwner=e.target.value;renderTable();};
+document.getElementById("fFlag").onclick=e=>{st.fFlag=!st.fFlag;e.currentTarget.setAttribute("aria-pressed",st.fFlag);renderTable();};
+document.getElementById("fBig").onclick=e=>{st.fBig=!st.fBig;e.currentTarget.setAttribute("aria-pressed",st.fBig);renderTable();};
+document.getElementById("inHead").oninput=e=>{st.head=+e.target.value||null;renderFigs();};
+document.getElementById("inRev").oninput=e=>{st.rev=+e.target.value||null;renderFigs();};
+document.getElementById("inTarget").oninput=e=>{st.target=+e.target.value||null;renderFigs();};
+document.getElementById("railToggle").onclick=e=>{
+  const b=document.getElementById("railBody"), on=b.classList.toggle("on");
+  e.currentTarget.setAttribute("aria-expanded",on);
+  e.currentTarget.innerHTML=(on?"Hide":"Open")+" the assumptions panel &nbsp;"+(on?"▴":"▾");
+};
+
+["dimA","dimB"].forEach(id=>{
+  const el=document.getElementById(id);
+  el.innerHTML=(id==="dimB"?`<option value="">nothing — just totals</option>`:"")
+    +Object.entries(DIMS).map(([k,d])=>`<option value="${k}">${d.l}</option>`).join("");
+  el.value=st[id];
+  el.onchange=()=>{ st[id]=el.value; if(st.dimA===st.dimB) st.dimB=""; document.getElementById("dimB").value=st.dimB; st.pick=null; renderPivot(); renderTable(); };
 });
+document.getElementById("meas").onchange=e=>{st.meas=e.target.value;renderPivot();};
+document.getElementById("pivShare").onclick=e=>{st.pivShare=!st.pivShare;e.currentTarget.setAttribute("aria-pressed",st.pivShare);renderPivot();};
+document.getElementById("btnCsvPivot").onclick=pivotCsv;
+document.querySelectorAll("#segTopN button").forEach(b=>b.onclick=()=>{
+  st.topN=+b.dataset.n;
+  document.querySelectorAll("#segTopN button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  renderTopV();
+});
+document.getElementById("fTop").onclick=e=>{
+  st.fTop = st.fTop===0?5 : st.fTop===5?10:0;
+  e.currentTarget.setAttribute("aria-pressed",st.fTop>0);
+  e.currentTarget.textContent = st.fTop===0?"Top 5 only":st.fTop===5?"Top 5 only":"Top 10 only";
+  renderTable();
+};
+
+/* =======================================================================
+   RAW DATA VIEW — the CSV exactly as it sits, editable, savable
+   ======================================================================= */
+let RAW_DIRTY=false, RAW_Q="";
+const NUMERIC_COLS=new Set([C.a25,C.bud26,C.fc26,C.varAbs,C.varPct,C.yoy26,
+                            C.defG,C.ovrG,C.appG,C.b27,C.yoy27,C.users,C.ppu]);
+
+function setDirty(on){
+  RAW_DIRTY=on;
+  const b=document.getElementById("rawDirty");
+  if(b) b.hidden=!on;
+  const s=document.getElementById("btnRawSave");
+  if(s) s.textContent = on ? "Save to GitHub — unsaved edits" : "Save to GitHub";
+}
+function rawMatches(r){
+  if(!RAW_Q) return true;
+  return r.join(" ").toLowerCase().indexOf(RAW_Q)>=0;
+}
+/* Column widths: prose needs room, figures do not. */
+function colWidth(i){
+  if(i===C.desc || i===C.notes) return 250;
+  if(i===C.vendor || i===C.tool) return 168;
+  if(i===C.status || i===C.driver || i===C.cat || i===C.dept || i===C.owner) return 132;
+  if(i===C.mkt || i===C.renew) return 124;
+  return NUMERIC_COLS.has(i) ? 104 : 116;
+}
+function renderRaw(){
+  const head=document.getElementById("rawThr");
+  if(!head) return;
+
+  const cg=document.getElementById("rawCols");
+  cg.innerHTML=`<col style="width:52px">`
+    + META.header.map((h,i)=>`<col style="width:${colWidth(i)}px">`).join("")
+    + `<col style="width:40px">`;
+  const total=52+40+META.header.reduce((a,h,i)=>a+colWidth(i),0);
+  document.getElementById("rawTbl").style.minWidth=total+"px";
+
+  head.innerHTML=`<th class="rowno">Row</th>`
+    + META.header.map((h,i)=>`<th class="${NUMERIC_COLS.has(i)?"r":""}">${esc(h||"Column "+(i+1))}</th>`).join("")
+    + `<th class="rowno"></th>`;
+
+  const body=document.getElementById("rawTb");
+  let shown=0;
+  body.innerHTML=GRID.map((r,gi)=>{
+    if(!rawMatches(r)) return "";
+    shown++;
+    return `<tr data-gi="${gi}"><td class="rowno">${gi+SHEET_OFFSET}</td>`
+      + META.header.map((h,ci)=>
+          `<td class="rawcell${NUMERIC_COLS.has(ci)?" r":""}" contenteditable="true" spellcheck="false"
+               data-gi="${gi}" data-ci="${ci}">${esc(r[ci]||"")}</td>`).join("")
+      + `<td class="rowno"><button class="rawdel" data-del="${gi}" title="Delete this row" aria-label="Delete row ${gi+SHEET_OFFSET}">×</button></td></tr>`;
+  }).join("");
+
+  document.getElementById("rawCount").textContent =
+    `${shown} of ${GRID.length} rows · ${META.header.length} columns · read from ${SOURCE}`;
+
+  body.querySelectorAll(".rawcell").forEach(td=>{
+    td.addEventListener("input",()=>{
+      GRID[+td.dataset.gi][+td.dataset.ci]=td.textContent;
+      if(!RAW_DIRTY) setDirty(true);
+    });
+    td.addEventListener("keydown",e=>{ if(e.key==="Escape") td.blur(); });
+  });
+  body.querySelectorAll(".rawdel").forEach(b=>b.onclick=()=>{
+    GRID.splice(+b.dataset.del,1); setDirty(true); renderRaw();
+  });
+}
+function applyRaw(){
+  rebuild();
+  renderTabs(); fillSelects(); renderAll(); renderRaw(); syncHeader();
+}
+function syncHeader(){
+  const el=document.querySelector(".brand span");
+  if(el) el.textContent=`${ROWS.length} vendors · all figures $000 · model rebuilds from ${CSV_URL}`;
+}
+
+/* =======================================================================
+   GITHUB SAVE — token lives in sessionStorage only, never on disk
+   ======================================================================= */
+const GH_TOKEN_KEY="techbudget.gh.token";
+const GH_CFG_KEY="techbudget.gh.cfg";
+const MEM={token:"",cfg:null};                       // fallback when storage is blocked
+
+function sessionGet(k){ try{ return window.sessionStorage.getItem(k); }catch(e){ return null; } }
+function sessionSet(k,v){ try{ window.sessionStorage.setItem(k,v); return true; }catch(e){ return false; } }
+function sessionDel(k){ try{ window.sessionStorage.removeItem(k); }catch(e){} }
+
+const ghToken = ()=> sessionGet(GH_TOKEN_KEY) || MEM.token || "";
+function setGhToken(t){ MEM.token=t; if(!sessionSet(GH_TOKEN_KEY,t)) {/* storage blocked; memory only */} }
+function clearGhToken(){ MEM.token=""; sessionDel(GH_TOKEN_KEY); }
+
+/* Guess owner / repo / path from the GitHub Pages URL we are served from. */
+function guessCfg(){
+  const cfg={owner:"",repo:"",branch:"main",path:CSV_URL,message:"Update tech budget data"};
+  try{
+    const host=location.hostname, parts=location.pathname.split("/").filter(Boolean);
+    if(/\.github\.io$/i.test(host)){
+      cfg.owner=host.replace(/\.github\.io$/i,"");
+      if(parts.length>1){ cfg.repo=parts[0]; cfg.path=parts.slice(1,-1).concat(CSV_URL).join("/"); }
+      else { cfg.repo=cfg.owner+".github.io"; }
+    }
+  }catch(e){}
+  return cfg;
+}
+function ghCfg(){
+  if(MEM.cfg) return MEM.cfg;
+  const raw=sessionGet(GH_CFG_KEY);
+  if(raw){ try{ MEM.cfg=JSON.parse(raw); return MEM.cfg; }catch(e){} }
+  MEM.cfg=guessCfg(); return MEM.cfg;
+}
+function setGhCfg(c){ MEM.cfg=c; sessionSet(GH_CFG_KEY,JSON.stringify(c)); }
+
+function utf8ToBase64(s){
+  const bytes=new TextEncoder().encode(s);
+  let bin=""; const CH=0x8000;
+  for(let i=0;i<bytes.length;i+=CH) bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH));
+  return btoa(bin);
+}
+function ghAjax(method,url,body,cb){
+  const x=new XMLHttpRequest();
+  x.open(method,url,true);
+  x.setRequestHeader("Accept","application/vnd.github+json");
+  x.setRequestHeader("X-GitHub-Api-Version","2022-11-28");
+  x.setRequestHeader("Authorization","Bearer "+ghToken());
+  if(body) x.setRequestHeader("Content-Type","application/json");
+  x.onload=()=>{ let j=null; try{ j=JSON.parse(x.responseText); }catch(e){} cb(null,x.status,j); };
+  x.onerror=()=>cb(new Error("Could not reach api.github.com. Check the connection and try again."),0,null);
+  x.ontimeout=()=>cb(new Error("The request to GitHub timed out."),0,null);
+  x.send(body?JSON.stringify(body):null);
+}
+
+function ghStatus(kind,msg){
+  const el=document.getElementById("ghStatus");
+  if(!el) return;
+  el.className="ghstatus "+kind;
+  el.innerHTML=msg;
+  el.hidden=false;
+}
+function contentsUrl(cfg){
+  const seg=cfg.path.split("/").filter(Boolean).map(encodeURIComponent).join("/");
+  return "https://api.github.com/repos/"+encodeURIComponent(cfg.owner)+"/"
+        +encodeURIComponent(cfg.repo)+"/contents/"+seg;
+}
+function saveToGitHub(){
+  const cfg=ghCfg();
+  if(!ghToken() || !cfg.owner || !cfg.repo || !cfg.path){ openGh(); return; }
+  const url=contentsUrl(cfg);
+  const busy=on=>{ const b=document.getElementById("btnRawSave"); if(b) b.disabled=on; };
+  busy(true);
+  ghStatus("wait","Reading the current file from GitHub…");
+
+  ghAjax("GET", url+"?ref="+encodeURIComponent(cfg.branch), null, (err,code,j)=>{
+    if(err){ busy(false); return ghStatus("bad",esc(err.message)); }
+    if(code===401){ busy(false); return ghStatus("bad","GitHub rejected the token (401). It may have expired, or it lacks <b>Contents: read and write</b> on this repository."); }
+    if(code===403){ busy(false); return ghStatus("bad","GitHub returned 403. The token is valid but has no write access to "+esc(cfg.owner+"/"+cfg.repo)+"."); }
+    if(code===404){
+      /* No file yet at that path — that is fine, we create it. */
+      return put(null);
+    }
+    if(code!==200){ busy(false); return ghStatus("bad","GitHub returned "+code+(j&&j.message?" — "+esc(j.message):"")); }
+    put(j&&j.sha?j.sha:null);
+  });
+
+  function put(sha){
+    const text=toCSV(fullGrid());
+    const payload={ message:cfg.message||"Update tech budget data",
+                    content:utf8ToBase64(text), branch:cfg.branch };
+    if(sha) payload.sha=sha;
+    ghStatus("wait","Writing "+esc(cfg.path)+" to "+esc(cfg.owner+"/"+cfg.repo)+"…");
+    ghAjax("PUT", url, payload, (err,code,j)=>{
+      busy(false);
+      if(err) return ghStatus("bad",esc(err.message));
+      if(code===409) return ghStatus("bad","Conflict (409). The file changed on GitHub after this page loaded. Reload, reapply the edits, then save again.");
+      if(code===422) return ghStatus("bad","GitHub returned 422"+(j&&j.message?" — "+esc(j.message):"")+". Check the branch name.");
+      if(code!==200 && code!==201) return ghStatus("bad","Save failed ("+code+")"+(j&&j.message?" — "+esc(j.message):""));
+      CSV_TEXT=text;
+      applyRaw();                                   // every tab recalculates here
+      setDirty(false);
+      const sha7=j&&j.commit&&j.commit.sha?j.commit.sha.slice(0,7):"";
+      ghStatus("ok","Saved to <b>"+esc(cfg.owner+"/"+cfg.repo)+"</b> on <b>"+esc(cfg.branch)+"</b>"
+        +(sha7?" as commit <b>"+sha7+"</b>":"")+". Every tab has been recalculated from the new data. "
+        +"GitHub Pages normally redeploys within a minute.");
+    });
+  }
+}
+
+/* ---------------- token / repo dialog ---------------- */
+function openGh(){
+  const cfg=ghCfg();
+  ["ghOwner","ghRepo","ghBranch","ghPath","ghMsg"].forEach((id,i)=>{
+    document.getElementById(id).value=[cfg.owner,cfg.repo,cfg.branch,cfg.path,cfg.message][i]||"";
+  });
+  const t=document.getElementById("ghTok");
+  t.value=""; t.placeholder = ghToken() ? "A token is already held for this tab — leave blank to reuse it" : "ghp_… or github_pat_…";
+  document.getElementById("ghHeld").hidden = !ghToken();
+  document.getElementById("ghForget").hidden = !ghToken();
+  document.getElementById("ghErr").textContent="";
+  document.getElementById("ghModal").hidden=false;
+  const el=ghToken()?document.getElementById("ghOwner"):t;
+  setTimeout(()=>el.focus(),30);
+}
+function closeGh(){ document.getElementById("ghModal").hidden=true; }
+
+function wireRaw(){
+  document.getElementById("btnRawApply").onclick=()=>{ applyRaw(); setDirty(false);
+    ghStatus("ok","Applied locally. Every tab now reflects the edited rows — nothing has been written to GitHub yet."); };
+  document.getElementById("btnRawRevert").onclick=()=>{
+    ingest(parseCSV(CSV_TEXT)); applyRaw(); setDirty(false);
+    ghStatus("ok","Reverted to the last loaded or saved version.");
+  };
+  document.getElementById("btnRawAdd").onclick=()=>{
+    GRID.push(new Array(META.width).fill("")); setDirty(true); RAW_Q="";
+    document.getElementById("rawQ").value=""; renderRaw();
+    const rows=document.querySelectorAll("#rawTb tr");
+    const last=rows[rows.length-1];
+    if(last){ last.scrollIntoView({block:"center"}); last.querySelector(".rawcell").focus(); }
+  };
+  document.getElementById("rawQ").oninput=e=>{ RAW_Q=e.target.value.toLowerCase(); renderRaw(); };
+  document.getElementById("btnRawSave").onclick=()=>{ ghToken()?saveToGitHub():openGh(); };
+  document.getElementById("btnRawCfg").onclick=openGh;
+  document.getElementById("btnRawDl").onclick=()=>{
+    const blob=new Blob([toCSV(fullGrid())],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download=CSV_URL.split("/").pop(); a.click(); URL.revokeObjectURL(a.href);
+  };
+  document.getElementById("rawFile").onchange=e=>{
+    const f=e.target.files&&e.target.files[0]; if(!f) return;
+    const fr=new FileReader();
+    fr.onload=()=>{ CSV_TEXT=fr.result; SOURCE="the file you opened, "+f.name;
+      ingest(parseCSV(CSV_TEXT)); applyRaw(); setDirty(true);
+      ghStatus("ok","Loaded "+esc(f.name)+". Save to GitHub to publish it."); };
+    fr.readAsText(f);
+    e.target.value="";
+  };
+
+  document.getElementById("ghCancel").onclick=closeGh;
+  document.getElementById("ghForget").onclick=()=>{ clearGhToken();
+    ghStatus("ok","Token cleared from this tab."); closeGh(); };
+  document.getElementById("ghModal").onclick=e=>{ if(e.target.id==="ghModal") closeGh(); };
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape" && !document.getElementById("ghModal").hidden) closeGh();
+  });
+  document.getElementById("ghSave").onclick=()=>{
+    const tok=document.getElementById("ghTok").value.trim();
+    if(tok) setGhToken(tok);
+    if(!ghToken()){ document.getElementById("ghErr").textContent="Paste a personal access token first."; return; }
+    const cfg={
+      owner:document.getElementById("ghOwner").value.trim(),
+      repo:document.getElementById("ghRepo").value.trim(),
+      branch:document.getElementById("ghBranch").value.trim()||"main",
+      path:document.getElementById("ghPath").value.trim()||CSV_URL,
+      message:document.getElementById("ghMsg").value.trim()||"Update tech budget data"
+    };
+    if(!cfg.owner||!cfg.repo){ document.getElementById("ghErr").textContent="Owner and repository are both required."; return; }
+    setGhCfg(cfg);
+    document.getElementById("ghErr").textContent="";
+    closeGh();
+    saveToGitHub();
+  };
+}
+
+/* =======================================================================
+   BOOTSTRAP — fetch the CSV, then build everything from it
+   ======================================================================= */
+function start(text,src){
+  CSV_TEXT=text; SOURCE=src;
+  ingest(parseCSV(text));
+  rebuild();
+  renderTabs(); fillSelects(); renderAll();
+  wireRaw(); renderRaw(); syncHeader(); setDirty(false);
+  go("overview");
+}
+function bootstrap(){
+  const fallback=()=>{
+    const el=document.getElementById("csvFallback");
+    return el?el.textContent:"";
+  };
+  const x=new XMLHttpRequest();
+  const sep=CSV_URL.indexOf("?")<0?"?":"&";
+  try{ x.open("GET", CSV_URL+sep+"v="+Date.now(), true); }
+  catch(e){ return start(fallback(),"the copy embedded in this page"); }
+  x.onload=()=>{
+    if(x.status>=200 && x.status<300 && String(x.responseText).trim())
+      start(x.responseText, CSV_URL);
+    else start(fallback(),"the copy embedded in this page");
+  };
+  x.onerror=()=>start(fallback(),"the copy embedded in this page");
+  try{ x.send(); }catch(e){ start(fallback(),"the copy embedded in this page"); }
+}
+bootstrap();
+
 </script>
 </body>
 </html>
