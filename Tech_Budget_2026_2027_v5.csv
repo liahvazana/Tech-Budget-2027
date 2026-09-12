@@ -4,7 +4,7 @@ Financial rollup + operational ownership in one source of truth. Backend contrac
 Vendor,Service / Tool,Description,Service Model,Category,Department,System Owner,Status,Rollup?,Cost Driver,2025 Actual ($000),2026 Budget ($000),2026 Forecast ($000),2026 Var vs Budget ($000),2026 Var %,YoY 2025→2026,Default Growth %,Override Growth %,Applied Growth %,2027 Budget ($000),2027 YoY %,Is AWS Marketplace?,Notes / Decision,Licensed / Contract Users2,Price / User / Yr ($),Renewal Date
 "Datadog, Inc.
 ",Datadog,"Monitoring and observability platform for metrics, logs, traces and production alerting.",SaaS,Cloud & Infrastructure,Technology Shared,Shay Fainberg,Active,Yes,Data / Usage,,$859.1,$710.0,($149.1),-17.4%,,20.0%,,% from AWS,$938.1,32.1%,,"33% from AWS cost
-testing",,,
+testing 123",,,
 Amazon Web Services,AWS,"Cloud infrastructure platform for compute, storage, networking, databases and related AWS services.",IaaS,Cloud & Infrastructure,Infrastructure,Shay Fainberg,Active,Yes,Data / Usage,,"$1,535.0","$1,995.0",$460.0,30.0%,,20.0%,,42.5%,"$2,842.9",42.5%,,,,,
 Qmasters Security Services Ltd,Qmasters,,SaaS,Security,Security,Shay Fainberg,Active,Yes,Data / Usage,,$486.7,$486.0,($0.7),-0.1%,,20.0%,,20.0%,$583.2,20.0%,,index data (security aert per day),,,
 Google,Google Workspace,,SaaS,IT & Productivity,IT,Tal Eliaz,Active,Yes,Per User / Seat,,$180.0,$190.0,$10.0,5.6%,,10.0%,,10.0%,$209.0,10.0%,,900 users - 13.8$ per user (till Sep 2026) - plan ro go to 23$,,,
