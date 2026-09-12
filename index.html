@@ -7,9 +7,10 @@
 <style>
   body{font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#F4F5F2;
        color:#1A2430;margin:0;padding:30px 20px}
-  .box{max-width:660px;margin:0 auto;background:#fff;border:1px solid #DCDFD9;border-radius:4px}
-  .box.drag{border-color:#C08A2E;background:#FFFCF5}
-  h1{margin:0;padding:15px 20px;font-size:18px;border-bottom:1px solid #DCDFD9}
+  .box{max-width:680px;margin:0 auto;background:#fff;border:1px solid #DCDFD9;border-radius:4px}
+  h1{margin:0;padding:15px 20px;font-size:18px;border-bottom:1px solid #DCDFD9;
+     display:flex;align-items:baseline;gap:10px}
+  h1 .repo{margin-inline-start:auto;font-size:12.5px;color:#96A1AE;font-weight:400;direction:ltr}
   table{border-collapse:collapse;width:100%;font-size:15px}
   th{background:#FAFAF7;text-align:right;font-size:13px;color:#6B7787;padding:9px 14px;
      border-bottom:1px solid #DCDFD9}
@@ -34,38 +35,110 @@
   .msg{margin-inline-start:auto;font-size:13.5px;color:#6B7787}
   .msg.ok{color:#3E7A6E;font-weight:600}
   .msg.err{color:#A34832;font-weight:600}
+  .pad{padding:22px 20px;color:#6B7787;font-size:14.5px}
 
-  .pad{padding:20px;color:#6B7787;font-size:14.5px}
-  .pad p{margin:0 0 10px}
-  .pad code{background:#EDEFE9;padding:2px 6px;border-radius:2px;direction:ltr;
-            display:inline-block;font-size:13px}
+  dialog{border:none;border-radius:5px;padding:24px;max-width:440px;width:calc(100% - 40px);
+         box-shadow:0 16px 44px rgba(20,30,45,.26)}
+  dialog::backdrop{background:rgba(20,30,45,.45)}
+  dialog h3{margin:0 0 10px;font-size:18px}
+  dialog p{margin:0 0 14px;color:#6B7787;font-size:14px}
+  dialog input{width:100%;padding:10px 12px;border:1px solid #DCDFD9;border-radius:3px;
+               direction:ltr;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+  dialog .btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 </style>
 </head>
 <body>
 
-<div class="box" id="box">
-  <h1>נתונים</h1>
+<div class="box">
+  <h1>נתונים <span class="repo" id="repo"></span></h1>
   <div id="out" class="pad">טוען…</div>
   <div class="bar">
     <button class="save" id="btnSave" disabled>שמור</button>
-    <button class="ghost" id="btnOpen">פתח את data.csv</button>
+    <button class="ghost" id="btnReload">טען מחדש</button>
+    <button class="ghost" id="btnTok">החלף טוקן</button>
     <span class="msg" id="msg"></span>
   </div>
 </div>
 
-<script>
-var HEAD = [], ROWS = [], ORIG = "", handle = null;
-var out = document.getElementById("out"),
-    msg = document.getElementById("msg"),
-    box = document.getElementById("box");
+<dialog id="dlg">
+  <h3>טוקן לכתיבה</h3>
+  <p>השמירה מבצעת קומיט לריפו דרך GitHub API, ולכן דרוש טוקן עם הרשאת
+     Contents ← Read and write על הריפו הזה. הטוקן נשמר רק בזיכרון הטאב, לא בקוד ולא בריפו.</p>
+  <input id="tok" type="password" placeholder="github_pat_… או ghp_…" autocomplete="off">
+  <div class="btns">
+    <button class="ghost" id="dlgNo">ביטול</button>
+    <button class="save" id="dlgYes">אישור</button>
+  </div>
+</dialog>
 
-var canWrite = "showOpenFilePicker" in window;   // Chrome ו-Edge
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+/* ===== הגדרות. ריק = זיהוי אוטומטי מכתובת ה-GitHub Pages ===== */
+var CFG = { owner: "", repo: "", branch: "main", path: "data.csv" };
+
+var HEAD = [], ROWS = [], ORIG = "", SHA = null;
+
+/* ---------- זיהוי הריפו ---------- */
+var R = (function () {
+  var owner = CFG.owner, repo = CFG.repo;
+  if (!owner && /\.github\.io$/.test(location.hostname))
+    owner = location.hostname.replace(/\.github\.io$/, "");
+  if (!repo) {
+    var seg = location.pathname.split("/").filter(Boolean);
+    repo = (seg.length && !/\.html?$/i.test(seg[0])) ? seg[0] : owner + ".github.io";
+  }
+  return { owner: owner, repo: repo, branch: CFG.branch || "main", path: CFG.path || "data.csv" };
+})();
+
+function apiUrl() {
+  return "https://api.github.com/repos/" + R.owner + "/" + R.repo +
+         "/contents/" + encodeURIComponent(R.path);
+}
+
+/* ---------- טוקן ---------- */
+function getTok() { return sessionStorage.getItem("gh_tok") || ""; }
+function setTok(v) { v ? sessionStorage.setItem("gh_tok", v) : sessionStorage.removeItem("gh_tok"); }
+
+function askTok() {
+  return new Promise(function (resolve) {
+    var d = document.getElementById("dlg");
+    $("#tok").val("");
+    d.showModal();
+    $("#tok").focus();
+    function done(ok) {
+      d.close();
+      $("#dlgYes, #dlgNo").off("click");
+      $("#tok").off("keydown");
+      if (ok) setTok($.trim($("#tok").val()));
+      resolve(ok && !!getTok());
+    }
+    $("#dlgYes").on("click", function () { done(true); });
+    $("#dlgNo").on("click", function () { done(false); });
+    $("#tok").on("keydown", function (e) { if (e.key === "Enter") done(true); });
+  });
+}
+
+function authHeaders() {
+  var h = { "Accept": "application/vnd.github+json" };
+  if (getTok()) h.Authorization = "Bearer " + getTok();
+  return h;
+}
+
+/* ---------- base64 בטוח ל-UTF-8 ---------- */
+function enc(str) {
+  return btoa(String.fromCharCode.apply(null, new TextEncoder().encode(str)));
+}
+function dec(b64) {
+  var bin = atob(b64.replace(/\s/g, "")), arr = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(arr);
+}
 
 /* ---------- CSV ---------- */
-function parse(text){
+function parse(text) {
   var lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
   HEAD = lines[0].split(",").slice(0, 3);
-  ROWS = lines.slice(1, 11).map(function (l){
+  ROWS = lines.slice(1, 11).map(function (l) {
     var c = l.split(",").slice(0, 3);
     return [c[0] || "", c[1] || "", c[2] || ""];
   });
@@ -73,149 +146,150 @@ function parse(text){
   render();
 }
 
-function cell(s){
+function cell(s) {
+  s = String(s == null ? "" : s);
   return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
 }
 
-function toCsv(){
+/* איסוף הנתונים מהטבלה לפורמט CSV */
+function toCsv() {
   return HEAD.map(cell).join(",") + "\n" +
-         ROWS.map(function (r){ return r.map(cell).join(","); }).join("\n") + "\n";
+         ROWS.map(function (r) { return r.map(cell).join(","); }).join("\n") + "\n";
 }
 
 /* ---------- תצוגה ---------- */
-function render(){
+function render() {
   var html = '<table><thead><tr><th class="i"></th>';
-  HEAD.forEach(function (h){ html += "<th>" + esc(h) + "</th>"; });
+  $.each(HEAD, function (_, h) { html += "<th>" + esc(h) + "</th>"; });
   html += "</tr></thead><tbody>";
-  ROWS.forEach(function (r, i){
+  $.each(ROWS, function (i, r) {
     html += '<tr><td class="i">' + (i + 1) + "</td>";
-    r.forEach(function (v, j){
+    $.each(r, function (j, v) {
       html += '<td><input value="' + esc(v) + '" data-r="' + i + '" data-c="' + j + '"></td>';
     });
     html += "</tr>";
   });
-  out.innerHTML = html + "</tbody></table>";
+  $("#out").html(html + "</tbody></table>");
 
-  Array.prototype.forEach.call(out.querySelectorAll("input"), function (inp){
-    inp.oninput = function (){
-      var r = +inp.dataset.r, c = +inp.dataset.c;
-      ROWS[r][c] = inp.value;
-      inp.classList.add("dirty");
-      check();
-    };
+  $("#out input").on("input", function () {
+    ROWS[+this.dataset.r][+this.dataset.c] = this.value;
+    $(this).addClass("dirty");
+    check();
   });
   check();
 }
 
-function check(){
+function check() {
   var changed = toCsv() !== ORIG;
-  document.getElementById("btnSave").disabled = !changed;
+  $("#btnSave").prop("disabled", !changed);
   if (changed) setMsg("יש שינויים שלא נשמרו.", "");
-  else setMsg(handle ? "מחובר לקובץ. שינויים יישמרו לתוכו." : "", "");
+  else if (!$("#msg").hasClass("ok")) setMsg("", "");
 }
 
-function setMsg(t, k){ msg.textContent = t; msg.className = "msg" + (k ? " " + k : ""); }
-function esc(s){
-  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c){
-    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+function setMsg(t, k) { $("#msg").text(t).attr("class", "msg" + (k ? " " + k : "")); }
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
   });
 }
 
-/* ---------- פתיחה עם הרשאת כתיבה ---------- */
-async function openFile(){
-  if (!canWrite){
-    setMsg("הדפדפן הזה לא תומך בכתיבה לקובץ. השמירה תוריד עותק.", "err");
-    return;
-  }
-  try{
-    var picked = await window.showOpenFilePicker({
-      types: [{ description: "CSV", accept: { "text/csv": [".csv"] } }],
-      multiple: false
-    });
-    handle = picked[0];
-    parse(await (await handle.getFile()).text());
-    setMsg("מחובר ל-" + handle.name + ".", "ok");
-  } catch (e){
-    if (e.name !== "AbortError") setMsg("הפתיחה נכשלה: " + e.message, "err");
-  }
+function why(xhr, what) {
+  if (xhr.status === 0)   return "לא הצלחתי להגיע ל-GitHub. בדוק חיבור.";
+  if (xhr.status === 401) return "הטוקן נדחה. בדוק שהוא תקף.";
+  if (xhr.status === 403) return "אין הרשאה, או שחרגת ממכסת הבקשות.";
+  if (xhr.status === 404) return R.path + " לא נמצא ב-" + R.owner + "/" + R.repo + " בענף " + R.branch + ".";
+  if (xhr.status === 409) return "הקובץ השתנה בינתיים. טען מחדש.";
+  if (xhr.status === 422) return "מזהה הגרסה אינו עדכני. טען מחדש ונסה שוב.";
+  return what + " נכשלה, סטטוס " + xhr.status + ".";
 }
 
-/* ---------- שמירה ---------- */
-async function save(){
-  var text = toCsv();
-  try{
-    if (!handle && canWrite){
-      handle = await window.showSaveFilePicker({
-        suggestedName: "data.csv",
-        types: [{ description: "CSV", accept: { "text/csv": [".csv"] } }]
+/* ---------- קריאה ---------- */
+function load() {
+  setMsg("טוען…", "");
+  $.ajax({
+    url: apiUrl() + "?ref=" + R.branch,
+    method: "GET",
+    headers: authHeaders(),
+    cache: false
+  }).done(function (data) {
+    SHA = data.sha;
+    parse(dec(data.content));
+    setMsg("", "");
+  }).fail(function (xhr) {
+    /* גיבוי: קריאת הקובץ הסטטי מהאתר עצמו */
+    $.ajax({ url: R.path, dataType: "text", cache: false })
+      .done(function (text) {
+        SHA = null;
+        parse(text);
+        setMsg("נקרא מהאתר ולא מה-API. השמירה תמשוך גרסה עדכנית לפני הקומיט.", "");
+      })
+      .fail(function () {
+        $("#out").html('<div class="pad">' + esc(why(xhr, "הקריאה")) + "</div>");
+        setMsg("שגיאה", "err");
       });
-    }
-    if (handle){
-      var perm = await handle.queryPermission({ mode: "readwrite" });
-      if (perm !== "granted")
-        perm = await handle.requestPermission({ mode: "readwrite" });
-      if (perm !== "granted") throw new Error("לא ניתנה הרשאת כתיבה.");
+  });
+}
 
-      var w = await handle.createWritable();
-      await w.write(text);
-      await w.close();
-      ORIG = text;
-      Array.prototype.forEach.call(out.querySelectorAll("input.dirty"), function (i){
-        i.classList.remove("dirty");
-      });
-      check();
-      setMsg("נשמר ל-" + handle.name + ".", "ok");
+/* ---------- שמירה: קומיט דרך ה-API ---------- */
+async function save() {
+  if (!getTok() && !(await askTok())) return;
+
+  var csv = toCsv();                       // איסוף הנתונים מהטבלה
+  $("#btnSave").prop("disabled", true);
+  setMsg("שומר…", "");
+
+  /* שלב 1 — מושכים sha עדכני, כדי לא לדרוס שינוי של מישהו אחר */
+  $.ajax({
+    url: apiUrl() + "?ref=" + R.branch,
+    method: "GET",
+    headers: authHeaders(),
+    cache: false
+  }).done(function (meta) {
+    if (SHA && meta.sha !== SHA && dec(meta.content) !== ORIG) {
+      setMsg("מישהו עדכן את הקובץ בינתיים. טען מחדש כדי לא לדרוס.", "err");
+      $("#btnSave").prop("disabled", false);
       return;
     }
-    download(text);
-  } catch (e){
-    if (e.name === "AbortError"){ setMsg("השמירה בוטלה.", ""); return; }
-    setMsg("השמירה נכשלה: " + e.message, "err");
-  }
-}
 
-function download(text){
-  var url = URL.createObjectURL(new Blob(["\uFEFF" + text], { type: "text/csv;charset=utf-8" })),
-      a = document.createElement("a");
-  a.href = url; a.download = "data.csv"; a.click();
-  setTimeout(function (){ URL.revokeObjectURL(url); }, 1000);
-  ORIG = text; check();
-  setMsg("הקובץ ירד לתיקיית ההורדות. החלף בו את הקובץ הקיים.", "ok");
-}
+    /* שלב 2 — PUT שמייצר קומיט ודוחף אותו לענף */
+    $.ajax({
+      url: apiUrl(),
+      method: "PUT",
+      headers: authHeaders(),
+      contentType: "application/json",
+      data: JSON.stringify({
+        message: "Update " + R.path,
+        content: enc(csv),
+        sha: meta.sha,
+        branch: R.branch
+      })
+    }).done(function (res) {
+      SHA = res.content.sha;
+      ORIG = csv;
+      $("#out input").removeClass("dirty");
+      check();
+      setMsg("נשמר. הדף הציבורי יתעדכן תוך כדקה.", "ok");
+    }).fail(function (xhr) {
+      if (xhr.status === 401) setTok("");
+      setMsg(why(xhr, "השמירה"), "err");
+      $("#btnSave").prop("disabled", false);
+    });
 
-/* ---------- גרירה ---------- */
-box.addEventListener("dragover", function (e){ e.preventDefault(); box.classList.add("drag"); });
-box.addEventListener("dragleave", function (){ box.classList.remove("drag"); });
-box.addEventListener("drop", async function (e){
-  e.preventDefault();
-  box.classList.remove("drag");
-  var item = e.dataTransfer.items && e.dataTransfer.items[0];
-  if (item && item.getAsFileSystemHandle){
-    handle = await item.getAsFileSystemHandle();   // גרירה שומרת הרשאת כתיבה
-    parse(await (await handle.getFile()).text());
-    setMsg("מחובר ל-" + handle.name + ".", "ok");
-    return;
-  }
-  var f = e.dataTransfer.files[0];
-  if (f){ handle = null; parse(await f.text()); }
-});
-
-/* ---------- טעינה ראשונית ---------- */
-document.getElementById("btnSave").onclick = save;
-document.getElementById("btnOpen").onclick = openFile;
-
-fetch("data.csv?t=" + Date.now())
-  .then(function (r){ if (!r.ok) throw 0; return r.text(); })
-  .then(function (t){
-    parse(t);
-    if (canWrite) setMsg('כדי לשמור לתוך הקובץ עצמו, לחץ "פתח את data.csv".', "");
-  })
-  .catch(function (){
-    out.innerHTML =
-      '<p>הדפדפן חוסם קריאת קבצים כשהעמוד נפתח מהדיסק.</p>' +
-      '<p>לחץ <b>פתח את data.csv</b> ובחר את הקובץ, או גרור אותו לכאן.</p>' +
-      '<p>לחלופין הרץ <code>python3 -m http.server 8000</code> מהתיקייה.</p>';
+  }).fail(function (xhr) {
+    if (xhr.status === 401) setTok("");
+    setMsg(why(xhr, "בדיקת הקובץ"), "err");
+    $("#btnSave").prop("disabled", false);
   });
+}
+
+/* ---------- אתחול ---------- */
+$(function () {
+  $("#repo").text(R.owner + "/" + R.repo + " · " + R.path);
+  $("#btnSave").on("click", save);
+  $("#btnReload").on("click", load);
+  $("#btnTok").on("click", async function () { if (await askTok()) load(); });
+  load();
+});
 </script>
 </body>
 </html>
