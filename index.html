@@ -7,50 +7,214 @@
 <style>
   body{font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#F4F5F2;
        color:#1A2430;margin:0;padding:30px 20px}
-  .box{max-width:620px;margin:0 auto;background:#fff;border:1px solid #DCDFD9;border-radius:4px}
-  h1{margin:0;padding:16px 20px;font-size:18px;border-bottom:1px solid #DCDFD9}
+  .box{max-width:660px;margin:0 auto;background:#fff;border:1px solid #DCDFD9;border-radius:4px}
+  .box.drag{border-color:#C08A2E;background:#FFFCF5}
+  h1{margin:0;padding:15px 20px;font-size:18px;border-bottom:1px solid #DCDFD9}
   table{border-collapse:collapse;width:100%;font-size:15px}
-  th{background:#FAFAF7;text-align:right;font-size:13px;color:#6B7787;padding:10px 20px;
+  th{background:#FAFAF7;text-align:right;font-size:13px;color:#6B7787;padding:9px 14px;
      border-bottom:1px solid #DCDFD9}
-  td{padding:10px 20px;border-bottom:1px solid #EDEFE9}
+  th.i{width:32px}
+  td{padding:4px 8px;border-bottom:1px solid #EDEFE9}
+  td.i{color:#96A1AE;font-size:12.5px;text-align:center;padding:4px}
   tr:last-child td{border-bottom:none}
-  .msg{padding:24px 20px;color:#A34832}
+  td input{width:100%;border:1px solid transparent;border-radius:3px;padding:7px 8px;
+           font:inherit;color:inherit;background:transparent}
+  td input:hover{border-color:#DCDFD9}
+  td input:focus{outline:none;border-color:#C08A2E;background:#FFFCF5}
+  td input.dirty{background:#FFF8EA;border-color:#E8D2A2}
+
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+       padding:14px 20px;border-top:1px solid #DCDFD9;background:#FAFAF7}
+  button{font:inherit;cursor:pointer;border-radius:3px;padding:9px 18px}
+  .save{background:#C08A2E;color:#22190A;border:none;font-weight:700}
+  .save:hover{background:#D29B3C}
+  .save:disabled{background:#DDE0D9;color:#96A1AE;cursor:not-allowed}
+  .ghost{background:#fff;border:1px solid #DCDFD9;font-weight:600}
+  .ghost:hover{border-color:#32465F}
+  .msg{margin-inline-start:auto;font-size:13.5px;color:#6B7787}
+  .msg.ok{color:#3E7A6E;font-weight:600}
+  .msg.err{color:#A34832;font-weight:600}
+
+  .pad{padding:20px;color:#6B7787;font-size:14.5px}
+  .pad p{margin:0 0 10px}
+  .pad code{background:#EDEFE9;padding:2px 6px;border-radius:2px;direction:ltr;
+            display:inline-block;font-size:13px}
 </style>
 </head>
 <body>
 
-<div class="box">
+<div class="box" id="box">
   <h1>נתונים</h1>
-  <div id="out" class="msg" style="color:#96A1AE">טוען…</div>
+  <div id="out" class="pad">טוען…</div>
+  <div class="bar">
+    <button class="save" id="btnSave" disabled>שמור</button>
+    <button class="ghost" id="btnOpen">פתח את data.csv</button>
+    <span class="msg" id="msg"></span>
+  </div>
 </div>
 
 <script>
-fetch("data.csv?t=" + Date.now())
-  .then(function (r) {
-    if (!r.ok) throw new Error("הקובץ לא נמצא (סטטוס " + r.status + ")");
-    return r.text();
-  })
-  .then(function (text) {
-    // פירוק לשורות, לקיחת 3 העמודות הראשונות ו-10 שורות הנתונים הראשונות
-    var lines = text.trim().split(/\r?\n/);
-    var head  = lines[0].split(",").slice(0, 3);
-    var rows  = lines.slice(1, 11).map(function (l) { return l.split(",").slice(0, 3); });
+var HEAD = [], ROWS = [], ORIG = "", handle = null;
+var out = document.getElementById("out"),
+    msg = document.getElementById("msg"),
+    box = document.getElementById("box");
 
-    var html = "<table><thead><tr>";
-    head.forEach(function (h) { html += "<th>" + h + "</th>"; });
-    html += "</tr></thead><tbody>";
-    rows.forEach(function (r) {
-      html += "<tr>";
-      for (var i = 0; i < 3; i++) { html += "<td>" + (r[i] || "") + "</td>"; }
-      html += "</tr>";
+var canWrite = "showOpenFilePicker" in window;   // Chrome ו-Edge
+
+/* ---------- CSV ---------- */
+function parse(text){
+  var lines = text.replace(/^\uFEFF/, "").trim().split(/\r?\n/);
+  HEAD = lines[0].split(",").slice(0, 3);
+  ROWS = lines.slice(1, 11).map(function (l){
+    var c = l.split(",").slice(0, 3);
+    return [c[0] || "", c[1] || "", c[2] || ""];
+  });
+  ORIG = toCsv();
+  render();
+}
+
+function cell(s){
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+function toCsv(){
+  return HEAD.map(cell).join(",") + "\n" +
+         ROWS.map(function (r){ return r.map(cell).join(","); }).join("\n") + "\n";
+}
+
+/* ---------- תצוגה ---------- */
+function render(){
+  var html = '<table><thead><tr><th class="i"></th>';
+  HEAD.forEach(function (h){ html += "<th>" + esc(h) + "</th>"; });
+  html += "</tr></thead><tbody>";
+  ROWS.forEach(function (r, i){
+    html += '<tr><td class="i">' + (i + 1) + "</td>";
+    r.forEach(function (v, j){
+      html += '<td><input value="' + esc(v) + '" data-r="' + i + '" data-c="' + j + '"></td>';
     });
-    html += "</tbody></table>";
+    html += "</tr>";
+  });
+  out.innerHTML = html + "</tbody></table>";
 
-    document.getElementById("out").outerHTML = html;
+  Array.prototype.forEach.call(out.querySelectorAll("input"), function (inp){
+    inp.oninput = function (){
+      var r = +inp.dataset.r, c = +inp.dataset.c;
+      ROWS[r][c] = inp.value;
+      inp.classList.add("dirty");
+      check();
+    };
+  });
+  check();
+}
+
+function check(){
+  var changed = toCsv() !== ORIG;
+  document.getElementById("btnSave").disabled = !changed;
+  if (changed) setMsg("יש שינויים שלא נשמרו.", "");
+  else setMsg(handle ? "מחובר לקובץ. שינויים יישמרו לתוכו." : "", "");
+}
+
+function setMsg(t, k){ msg.textContent = t; msg.className = "msg" + (k ? " " + k : ""); }
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+
+/* ---------- פתיחה עם הרשאת כתיבה ---------- */
+async function openFile(){
+  if (!canWrite){
+    setMsg("הדפדפן הזה לא תומך בכתיבה לקובץ. השמירה תוריד עותק.", "err");
+    return;
+  }
+  try{
+    var picked = await window.showOpenFilePicker({
+      types: [{ description: "CSV", accept: { "text/csv": [".csv"] } }],
+      multiple: false
+    });
+    handle = picked[0];
+    parse(await (await handle.getFile()).text());
+    setMsg("מחובר ל-" + handle.name + ".", "ok");
+  } catch (e){
+    if (e.name !== "AbortError") setMsg("הפתיחה נכשלה: " + e.message, "err");
+  }
+}
+
+/* ---------- שמירה ---------- */
+async function save(){
+  var text = toCsv();
+  try{
+    if (!handle && canWrite){
+      handle = await window.showSaveFilePicker({
+        suggestedName: "data.csv",
+        types: [{ description: "CSV", accept: { "text/csv": [".csv"] } }]
+      });
+    }
+    if (handle){
+      var perm = await handle.queryPermission({ mode: "readwrite" });
+      if (perm !== "granted")
+        perm = await handle.requestPermission({ mode: "readwrite" });
+      if (perm !== "granted") throw new Error("לא ניתנה הרשאת כתיבה.");
+
+      var w = await handle.createWritable();
+      await w.write(text);
+      await w.close();
+      ORIG = text;
+      Array.prototype.forEach.call(out.querySelectorAll("input.dirty"), function (i){
+        i.classList.remove("dirty");
+      });
+      check();
+      setMsg("נשמר ל-" + handle.name + ".", "ok");
+      return;
+    }
+    download(text);
+  } catch (e){
+    if (e.name === "AbortError"){ setMsg("השמירה בוטלה.", ""); return; }
+    setMsg("השמירה נכשלה: " + e.message, "err");
+  }
+}
+
+function download(text){
+  var url = URL.createObjectURL(new Blob(["\uFEFF" + text], { type: "text/csv;charset=utf-8" })),
+      a = document.createElement("a");
+  a.href = url; a.download = "data.csv"; a.click();
+  setTimeout(function (){ URL.revokeObjectURL(url); }, 1000);
+  ORIG = text; check();
+  setMsg("הקובץ ירד לתיקיית ההורדות. החלף בו את הקובץ הקיים.", "ok");
+}
+
+/* ---------- גרירה ---------- */
+box.addEventListener("dragover", function (e){ e.preventDefault(); box.classList.add("drag"); });
+box.addEventListener("dragleave", function (){ box.classList.remove("drag"); });
+box.addEventListener("drop", async function (e){
+  e.preventDefault();
+  box.classList.remove("drag");
+  var item = e.dataTransfer.items && e.dataTransfer.items[0];
+  if (item && item.getAsFileSystemHandle){
+    handle = await item.getAsFileSystemHandle();   // גרירה שומרת הרשאת כתיבה
+    parse(await (await handle.getFile()).text());
+    setMsg("מחובר ל-" + handle.name + ".", "ok");
+    return;
+  }
+  var f = e.dataTransfer.files[0];
+  if (f){ handle = null; parse(await f.text()); }
+});
+
+/* ---------- טעינה ראשונית ---------- */
+document.getElementById("btnSave").onclick = save;
+document.getElementById("btnOpen").onclick = openFile;
+
+fetch("data.csv?t=" + Date.now())
+  .then(function (r){ if (!r.ok) throw 0; return r.text(); })
+  .then(function (t){
+    parse(t);
+    if (canWrite) setMsg('כדי לשמור לתוך הקובץ עצמו, לחץ "פתח את data.csv".', "");
   })
-  .catch(function (e) {
-    document.getElementById("out").textContent =
-      e.message + ". אם פתחת את הקובץ בדאבל־קליק, הרץ שרת מקומי במקום.";
+  .catch(function (){
+    out.innerHTML =
+      '<p>הדפדפן חוסם קריאת קבצים כשהעמוד נפתח מהדיסק.</p>' +
+      '<p>לחץ <b>פתח את data.csv</b> ובחר את הקובץ, או גרור אותו לכאן.</p>' +
+      '<p>לחלופין הרץ <code>python3 -m http.server 8000</code> מהתיקייה.</p>';
   });
 </script>
 </body>
