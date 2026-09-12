@@ -365,6 +365,8 @@ td.rowno,th.rowno{position:sticky;left:0;z-index:2;background:var(--surface);
 .hint{font-size:11px;color:var(--muted2);margin:4px 0 0}
 .held{font-size:11.5px;color:var(--down);background:#E8F3EC;padding:6px 9px;border-radius:2px;margin-bottom:11px}
 .err{color:var(--up);font-size:12px;min-height:16px;margin:2px 0 8px}
+.target{font-size:11.5px;color:var(--muted);background:var(--paper);border-radius:2px;
+  padding:8px 10px;margin:0 0 4px;word-break:break-word}
 .sheet .acts{display:flex;gap:8px;justify-content:flex-end;padding:0 20px 18px;flex-wrap:wrap}
 .sheet .acts .grow{margin-right:auto}
 @media(max-width:640px){ .row2{grid-template-columns:1fr} }
@@ -564,7 +566,7 @@ td.rowno,th.rowno{position:sticky;left:0;z-index:2;background:var(--surface);
         <div>
           <h2>Raw data</h2>
           <p>The CSV exactly as it sits, all 26 columns. Edit any cell, then either apply the
-             change here or write it back to the repository. Saving recalculates every tab.</p>
+             change here, or save it back to the repository. Saving recalculates every tab.</p>
         </div>
         <div class="rawhead">
           <span class="rawflag" id="rawDirty" hidden>unsaved edits</span>
@@ -572,9 +574,9 @@ td.rowno,th.rowno{position:sticky;left:0;z-index:2;background:var(--surface);
           <button class="tag" id="btnRawDl">Download</button>
           <button class="tag" id="btnRawAdd">Add row</button>
           <button class="tag" id="btnRawRevert">Revert</button>
-          <button class="tag" id="btnRawCfg">Repository…</button>
+          <button class="tag" id="btnRawTok">Token…</button>
           <button class="tag" id="btnRawApply">Apply to model</button>
-          <button class="tag g" id="btnRawSave">Save to GitHub</button>
+          <button class="tag g" id="btnRawSave">Save</button>
         </div>
       </div>
       <p class="ghstatus" id="ghStatus" hidden></p>
@@ -620,7 +622,7 @@ td.rowno,th.rowno{position:sticky;left:0;z-index:2;background:var(--surface);
 
 <div class="modal" id="ghModal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ghTitle">
-    <h2 id="ghTitle">Write this CSV back to GitHub</h2>
+    <h2 id="ghTitle">Save to GitHub</h2>
     <p class="lede">The token is held in this browser tab only, in session storage. It is never
        written to the page, the repository or any file, and it disappears when you close the tab.</p>
     <div class="body">
@@ -628,24 +630,16 @@ td.rowno,th.rowno{position:sticky;left:0;z-index:2;background:var(--surface);
       <div class="fld">
         <label for="ghTok">Personal access token</label>
         <input type="password" id="ghTok" autocomplete="off" spellcheck="false">
-        <p class="hint">A fine-grained token scoped to this one repository with
-           <b>Contents: read and write</b> is enough. A classic token needs <b>repo</b>.</p>
+        <p class="hint">A fine-grained token scoped to this repository with
+           <b>Contents: read and write</b>. A classic token needs <b>repo</b>.</p>
       </div>
-      <div class="row2">
-        <div class="fld"><label for="ghOwner">Owner</label><input id="ghOwner" spellcheck="false"></div>
-        <div class="fld"><label for="ghRepo">Repository</label><input id="ghRepo" spellcheck="false"></div>
-      </div>
-      <div class="row2">
-        <div class="fld"><label for="ghBranch">Branch</label><input id="ghBranch" spellcheck="false"></div>
-        <div class="fld"><label for="ghPath">Path to the CSV</label><input id="ghPath" spellcheck="false"></div>
-      </div>
-      <div class="fld"><label for="ghMsg">Commit message</label><input id="ghMsg"></div>
+      <p class="target" id="ghTarget"></p>
       <p class="err" id="ghErr"></p>
     </div>
     <div class="acts">
       <button class="tag grow" id="ghForget">Forget the token</button>
       <button class="tag" id="ghCancel">Cancel</button>
-      <button class="tag g" id="ghSave" aria-pressed="true">Save and commit</button>
+      <button class="tag g" id="ghSave">Save</button>
     </div>
   </div>
 </div>
@@ -1777,7 +1771,14 @@ document.getElementById("fTop").onclick=e=>{
   e.currentTarget.textContent = st.fTop===0?"Top 5 only":st.fTop===5?"Top 5 only":"Top 10 only";
   renderTable();
 };
-
+  document.getElementById("ghSave").onclick=()=>{
+    const tok=document.getElementById("ghTok").value.trim();
+    if(tok) setGhToken(tok);
+    if(!ghToken()){ document.getElementById("ghErr").textContent="Paste a personal access token first."; return; }
+    document.getElementById("ghErr").textContent="";
+    closeGh();
+    saveToGitHub();
+  };
 /* =======================================================================
    RAW DATA VIEW — the CSV exactly as it sits, editable, savable
    ======================================================================= */
@@ -1789,8 +1790,6 @@ function setDirty(on){
   RAW_DIRTY=on;
   const b=document.getElementById("rawDirty");
   if(b) b.hidden=!on;
-  const s=document.getElementById("btnRawSave");
-  if(s) s.textContent = on ? "Save to GitHub — unsaved edits" : "Save to GitHub";
 }
 function rawMatches(r){
   if(!RAW_Q) return true;
@@ -1858,37 +1857,48 @@ function syncHeader(){
    GITHUB SAVE — token lives in sessionStorage only, never on disk
    ======================================================================= */
 const GH_TOKEN_KEY="techbudget.gh.token";
-const GH_CFG_KEY="techbudget.gh.cfg";
-const MEM={token:"",cfg:null};                       // fallback when storage is blocked
+const MEM={token:""};                                // fallback when storage is blocked
+
+/* The repository this page saves into. Set explicitly so nothing depends on
+   how the Pages URL happens to be shaped. Leave GH_BRANCH blank to use the
+   repository's default branch. */
+const GH_REPO   = "liahvazana/Tech-Budget-2027";
+const GH_BRANCH = "main";
 
 function sessionGet(k){ try{ return window.sessionStorage.getItem(k); }catch(e){ return null; } }
 function sessionSet(k,v){ try{ window.sessionStorage.setItem(k,v); return true; }catch(e){ return false; } }
 function sessionDel(k){ try{ window.sessionStorage.removeItem(k); }catch(e){} }
 
 const ghToken = ()=> sessionGet(GH_TOKEN_KEY) || MEM.token || "";
-function setGhToken(t){ MEM.token=t; if(!sessionSet(GH_TOKEN_KEY,t)) {/* storage blocked; memory only */} }
-function clearGhToken(){ MEM.token=""; sessionDel(GH_TOKEN_KEY); }
+function setGhToken(t){ MEM.token=t; sessionSet(GH_TOKEN_KEY,t); GH.resolved=false; }
+function clearGhToken(){ MEM.token=""; sessionDel(GH_TOKEN_KEY); GH.resolved=false; }
 
-/* Guess owner / repo / path from the GitHub Pages URL we are served from. */
-function guessCfg(){
-  const cfg={owner:"",repo:"",branch:"main",path:CSV_URL,message:"Update tech budget data"};
+/* Where the save will land. Filled in by resolveTarget(), never typed by hand. */
+const GH={owner:"",repo:"",branch:"",path:"",resolved:false};
+const enc=encodeURIComponent;
+const repoApi=()=>"https://api.github.com/repos/"+enc(GH.owner)+"/"+enc(GH.repo);
+const contentsUrl=()=>repoApi()+"/contents/"+GH.path.split("/").map(enc).join("/");
+const targetLabel=()=>GH.resolved ? GH.owner+"/"+GH.repo+" · "+GH.branch+" · "+GH.path : "";
+
+/* Read owner / repo / folder off a github.io URL. */
+function detectRepo(){
+  if(GH_REPO.indexOf("/")>0){
+    const bits=GH_REPO.split("/");
+    return {owner:bits[0].trim(), repo:bits[1].trim(), dir:"", explicit:true};
+  }
   try{
-    const host=location.hostname, parts=location.pathname.split("/").filter(Boolean);
-    if(/\.github\.io$/i.test(host)){
-      cfg.owner=host.replace(/\.github\.io$/i,"");
-      if(parts.length>1){ cfg.repo=parts[0]; cfg.path=parts.slice(1,-1).concat(CSV_URL).join("/"); }
-      else { cfg.repo=cfg.owner+".github.io"; }
+    const m=location.hostname.match(/^([^.]+)\.github\.io$/i);
+    if(m){
+      const owner=m[1];
+      const parts=location.pathname.split("/").filter(Boolean);
+      const isFile=/\.[a-z0-9]+$/i.test(parts[parts.length-1]||"");
+      const dirs=isFile?parts.slice(0,-1):parts.slice();
+      if(dirs.length) return {owner, repo:dirs[0], dir:dirs.slice(1).join("/")};
+      return {owner, repo:owner+".github.io", dir:""};
     }
   }catch(e){}
-  return cfg;
+  return null;
 }
-function ghCfg(){
-  if(MEM.cfg) return MEM.cfg;
-  const raw=sessionGet(GH_CFG_KEY);
-  if(raw){ try{ MEM.cfg=JSON.parse(raw); return MEM.cfg; }catch(e){} }
-  MEM.cfg=guessCfg(); return MEM.cfg;
-}
-function setGhCfg(c){ MEM.cfg=c; sessionSet(GH_CFG_KEY,JSON.stringify(c)); }
 
 function utf8ToBase64(s){
   const bytes=new TextEncoder().encode(s);
@@ -1908,57 +1918,126 @@ function ghAjax(method,url,body,cb){
   x.ontimeout=()=>cb(new Error("The request to GitHub timed out."),0,null);
   x.send(body?JSON.stringify(body):null);
 }
-
 function ghStatus(kind,msg){
   const el=document.getElementById("ghStatus");
   if(!el) return;
-  el.className="ghstatus "+kind;
-  el.innerHTML=msg;
-  el.hidden=false;
+  el.className="ghstatus "+kind; el.innerHTML=msg; el.hidden=false;
 }
-function contentsUrl(cfg){
-  const seg=cfg.path.split("/").filter(Boolean).map(encodeURIComponent).join("/");
-  return "https://api.github.com/repos/"+encodeURIComponent(cfg.owner)+"/"
-        +encodeURIComponent(cfg.repo)+"/contents/"+seg;
-}
-function saveToGitHub(){
-  const cfg=ghCfg();
-  if(!ghToken() || !cfg.owner || !cfg.repo || !cfg.path){ openGh(); return; }
-  const url=contentsUrl(cfg);
-  const busy=on=>{ const b=document.getElementById("btnRawSave"); if(b) b.disabled=on; };
-  busy(true);
-  ghStatus("wait","Reading the current file from GitHub…");
+const NO_ACCESS = r =>
+  "GitHub cannot see a repository called <b>"+esc(r)+"</b>. If this is a fine-grained token, "
+ +"open its settings and make sure <b>"+esc(r)+"</b> is picked under <b>Repository access</b>, "
+ +"with <b>Contents: read and write</b>. If the repository is right but private, the token needs access to it.";
 
-  ghAjax("GET", url+"?ref="+encodeURIComponent(cfg.branch), null, (err,code,j)=>{
-    if(err){ busy(false); return ghStatus("bad",esc(err.message)); }
-    if(code===401){ busy(false); return ghStatus("bad","GitHub rejected the token (401). It may have expired, or it lacks <b>Contents: read and write</b> on this repository."); }
-    if(code===403){ busy(false); return ghStatus("bad","GitHub returned 403. The token is valid but has no write access to "+esc(cfg.owner+"/"+cfg.repo)+"."); }
-    if(code===404){
-      /* No file yet at that path — that is fine, we create it. */
-      return put(null);
-    }
-    if(code!==200){ busy(false); return ghStatus("bad","GitHub returned "+code+(j&&j.message?" — "+esc(j.message):"")); }
-    put(j&&j.sha?j.sha:null);
+/* Work out the repository, its live branch and where the CSV actually lives.
+   Nothing here is assumed — every part is confirmed against the API first. */
+function resolveTarget(done){
+  const d=detectRepo();
+  if(!d) return done("This page is not served from a github.io address, so the repository "
+    +"cannot be read from the URL. Open the HTML file and set <b>GH_REPO</b> near the top of the "
+    +"script to <b>\"owner/repo\"</b>.");
+
+  openRepo(d.owner, d.repo, d.dir||"", ()=>{
+    /* owner.github.io/foo/ is ambiguous: foo may be a repository, or a folder
+       inside the owner's user site. If the first reading misses, try the other. */
+    if(!d.explicit && !/\.github\.io$/i.test(d.repo)){
+      const dir=[d.repo,d.dir].filter(Boolean).join("/");
+      openRepo(d.owner, d.owner+".github.io", dir, ()=>done(NO_ACCESS(d.owner+"/"+d.repo)));
+    } else done(NO_ACCESS(d.owner+"/"+d.repo));
+  });
+
+  function openRepo(owner,repo,dir,onMiss){
+    ghAjax("GET","https://api.github.com/repos/"+enc(owner)+"/"+enc(repo),null,(err,code,j)=>{
+      if(err) return done(esc(err.message));
+      if(code===401) return done("GitHub rejected the token (401). It may have expired, or it was "
+        +"pasted with a character missing. Use <b>Token…</b> to enter it again.");
+      if(code===404||code===403) return onMiss();
+      if(code!==200) return done("GitHub returned "+code+" while looking up the repository.");
+      GH.owner=owner; GH.repo=repo; GH.branch=GH_BRANCH||j.default_branch||"main";
+      locate(dir, GH_BRANCH||j.default_branch||"main");
+    });
+  }
+
+  /* Look for the CSV by name in the branch trees, so a file under /docs or any
+     other folder is found rather than guessed at. */
+  function locate(dir, dflt0){
+    let dflt=dflt0;
+    /* dflt is reassigned when a branch is pinned. */
+    const name=CSV_URL.split("/").pop();
+    const guess=(dir?dir+"/":"")+name;
+    const branches=GH_BRANCH ? [GH_BRANCH]
+      : [dflt,"gh-pages","main","master"].filter((b,i,a)=>b&&a.indexOf(b)===i);
+    dflt = GH_BRANCH || dflt;
+    let i=0;
+    (function next(){
+      if(i>=branches.length){                       // not committed yet — create it
+        GH.branch=dflt; GH.path=guess; GH.resolved=true; return done(null);
+      }
+      const br=branches[i++];
+      ghAjax("GET",repoApi()+"/git/trees/"+enc(br)+"?recursive=1",null,(err,code,j)=>{
+        if(err) return done(esc(err.message));
+        if(code===200 && j && j.tree){
+          const hits=j.tree.filter(t=>t.type==="blob" &&
+            (t.path===name || t.path.slice(-(name.length+1))==="/"+name));
+          if(hits.length){
+            const exact=hits.filter(t=>t.path===guess)[0];
+            GH.branch=br; GH.path=(exact||hits[0]).path; GH.resolved=true; return done(null);
+          }
+        }
+        next();
+      });
+    })();
+  }
+}
+
+function busySave(on){ const b=document.getElementById("btnRawSave"); if(b) b.disabled=on; }
+
+function saveToGitHub(){
+  if(!ghToken()) return openGh();
+  busySave(true);
+  if(GH.resolved) return writeFile();
+  ghStatus("wait","Finding the file in your repository…");
+  resolveTarget(err=>{
+    if(err){ busySave(false); return ghStatus("bad",err); }
+    writeFile();
+  });
+}
+
+function writeFile(){
+  const url=contentsUrl();
+  ghStatus("wait","Reading <b>"+esc(GH.path)+"</b> from <b>"+esc(GH.owner+"/"+GH.repo)+"</b>…");
+  ghAjax("GET", url+"?ref="+enc(GH.branch), null, (err,code,j)=>{
+    if(err){ busySave(false); return ghStatus("bad",esc(err.message)); }
+    if(code===401){ busySave(false); GH.resolved=false;
+      return ghStatus("bad","GitHub rejected the token (401). Use <b>Token…</b> to enter it again."); }
+    if(code===403){ busySave(false);
+      return ghStatus("bad","The token cannot write to <b>"+esc(GH.owner+"/"+GH.repo)+"</b> (403). It needs <b>Contents: read and write</b>."); }
+    if(code!==200 && code!==404){ busySave(false);
+      return ghStatus("bad","GitHub returned "+code+(j&&j.message?" — "+esc(j.message):"")); }
+    put(code===200&&j?j.sha:null);
   });
 
   function put(sha){
     const text=toCSV(fullGrid());
-    const payload={ message:cfg.message||"Update tech budget data",
-                    content:utf8ToBase64(text), branch:cfg.branch };
+    const payload={ message:"Update "+CSV_URL.split("/").pop(),
+                    content:utf8ToBase64(text), branch:GH.branch };
     if(sha) payload.sha=sha;
-    ghStatus("wait","Writing "+esc(cfg.path)+" to "+esc(cfg.owner+"/"+cfg.repo)+"…");
+    ghStatus("wait","Writing <b>"+esc(GH.path)+"</b> to <b>"+esc(GH.branch)+"</b>…");
     ghAjax("PUT", url, payload, (err,code,j)=>{
-      busy(false);
+      busySave(false);
       if(err) return ghStatus("bad",esc(err.message));
+      if(code===404){ GH.resolved=false;
+        return ghStatus("bad","GitHub returned 404 writing to <b>"+esc(targetLabel())+"</b>. That "
+          +"normally means the token has no write access to this repository. Check <b>Contents: "
+          +"read and write</b> on the token, then save again."); }
       if(code===409) return ghStatus("bad","Conflict (409). The file changed on GitHub after this page loaded. Reload, reapply the edits, then save again.");
-      if(code===422) return ghStatus("bad","GitHub returned 422"+(j&&j.message?" — "+esc(j.message):"")+". Check the branch name.");
+      if(code===422) return ghStatus("bad","GitHub returned 422"+(j&&j.message?" — "+esc(j.message):"")+".");
       if(code!==200 && code!==201) return ghStatus("bad","Save failed ("+code+")"+(j&&j.message?" — "+esc(j.message):""));
       CSV_TEXT=text;
       applyRaw();                                   // every tab recalculates here
       setDirty(false);
       const sha7=j&&j.commit&&j.commit.sha?j.commit.sha.slice(0,7):"";
-      ghStatus("ok","Saved to <b>"+esc(cfg.owner+"/"+cfg.repo)+"</b> on <b>"+esc(cfg.branch)+"</b>"
-        +(sha7?" as commit <b>"+sha7+"</b>":"")+". Every tab has been recalculated from the new data. "
+      ghStatus("ok","Saved to <b>"+esc(GH.path)+"</b> on <b>"+esc(GH.owner+"/"+GH.repo+" · "+GH.branch)+"</b>"
+        +(sha7?", commit <b>"+sha7+"</b>":"")+". Every tab has been recalculated. "
         +"GitHub Pages normally redeploys within a minute.");
     });
   }
@@ -1966,18 +2045,19 @@ function saveToGitHub(){
 
 /* ---------------- token / repo dialog ---------------- */
 function openGh(){
-  const cfg=ghCfg();
-  ["ghOwner","ghRepo","ghBranch","ghPath","ghMsg"].forEach((id,i)=>{
-    document.getElementById(id).value=[cfg.owner,cfg.repo,cfg.branch,cfg.path,cfg.message][i]||"";
-  });
   const t=document.getElementById("ghTok");
-  t.value=""; t.placeholder = ghToken() ? "A token is already held for this tab — leave blank to reuse it" : "ghp_… or github_pat_…";
-  document.getElementById("ghHeld").hidden = !ghToken();
+  t.value="";
+  t.placeholder = ghToken() ? "A token is already held — leave blank to reuse it" : "github_pat_… or ghp_…";
+  document.getElementById("ghHeld").hidden   = !ghToken();
   document.getElementById("ghForget").hidden = !ghToken();
   document.getElementById("ghErr").textContent="";
+  const d=detectRepo();
+  document.getElementById("ghTarget").innerHTML = GH.resolved
+    ? "Saves to <b>"+esc(targetLabel())+"</b>."
+    : d ? "Saves to <b>"+esc(d.owner+"/"+d.repo)+"</b>. The branch and the file's location are read from the repository."
+        : "This page is not on a github.io address, so set <b>GH_REPO</b> near the top of the script.";
   document.getElementById("ghModal").hidden=false;
-  const el=ghToken()?document.getElementById("ghOwner"):t;
-  setTimeout(()=>el.focus(),30);
+  setTimeout(()=>t.focus(),30);
 }
 function closeGh(){ document.getElementById("ghModal").hidden=true; }
 
@@ -1997,7 +2077,7 @@ function wireRaw(){
   };
   document.getElementById("rawQ").oninput=e=>{ RAW_Q=e.target.value.toLowerCase(); renderRaw(); };
   document.getElementById("btnRawSave").onclick=()=>{ ghToken()?saveToGitHub():openGh(); };
-  document.getElementById("btnRawCfg").onclick=openGh;
+  document.getElementById("btnRawTok").onclick=openGh;
   document.getElementById("btnRawDl").onclick=()=>{
     const blob=new Blob([toCSV(fullGrid())],{type:"text/csv;charset=utf-8"});
     const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
